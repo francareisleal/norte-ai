@@ -94,16 +94,36 @@ $("import-file").addEventListener("change",async e=>{const file=e.target.files[0
 $("clear-chat").addEventListener("click",()=>{if(!confirm("Apagar o histórico de conversa deste navegador?"))return;state.chat=[{role:"assistant",content:greet}];persist();renderChat();toast("Conversa apagada.");});
 $("clear-data").addEventListener("click",()=>{if(!confirm("Apagar permanentemente todos os dados locais da NORTE neste navegador?"))return;state=defaults();persist();renderAll();toast("Dados locais apagados.");});
 function setAuthText(text){$("login-message").textContent=text;}
+let recoveringPassword=false;
 function updateAuthUI(){
  if(!ready){$("api-status").textContent="Modo guiado. Para ativar IA, configure o Supabase em config.js e publique uma função norte-mentor segura.";return;}
  $("login-panel").hidden=false;
- $("api-status").textContent=session?"Conta conectada à NORTE. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
- $("ai-mode").textContent=session?"● IA generativa conectada — serviço protegido por autenticação.":"● Modo guiado — entre em Ajustes para conectar sua conta.";
+ $("login-controls").hidden=recoveringPassword;
+ $("password-reset-panel").hidden=!recoveringPassword;
+ $("api-status").textContent=recoveringPassword?"Recuperação de senha: defina sua nova senha.":session?"Conta conectada à NORTE. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
+ $("ai-mode").textContent=session&&!recoveringPassword?"● Conta conectada — teste a mentoria para verificar a IA generativa.":"● Modo guiado — entre em Ajustes para conectar sua conta.";
 }
 async function initCloud(){
  if(!ready){updateAuthUI();return;}
- try{const m=await import("https://esm.sh/@supabase/supabase-js@2.95.0?bundle");client=m.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const r=await client.auth.getSession();session=r.data.session;client.auth.onAuthStateChange((_event,s)=>{session=s;updateAuthUI();});updateAuthUI();}
- catch(e){$("api-status").textContent="Não foi possível carregar o Supabase. Verifique a configuração e a internet.";setAuthText("O modo guiado permanece disponível.");}
+ try{
+   const m=await import("https://esm.sh/@supabase/supabase-js@2.95.0?bundle");
+   client=m.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+   client.auth.onAuthStateChange((event,s)=>{
+     session=s;
+     if(event==="PASSWORD_RECOVERY"){
+       recoveringPassword=true;
+       go("ajustes");
+       setAuthText("Link confirmado. Defina sua nova senha abaixo.");
+     }
+     updateAuthUI();
+   });
+   const r=await client.auth.getSession();
+   session=r.data.session;
+   updateAuthUI();
+ }catch(e){
+   $("api-status").textContent="Não foi possível carregar o Supabase. Verifique a configuração e a internet.";
+   setAuthText("O modo guiado permanece disponível.");
+ }
 }
 $("login-btn").addEventListener("click",async()=>{
  if(!client)return setAuthText("Configure o Supabase primeiro.");
@@ -114,7 +134,54 @@ $("login-btn").addEventListener("click",async()=>{
  $("user-password").value="";
  setAuthText(error?"Não foi possível entrar. Confira suas credenciais.":"Login concluído. Abra Mentoria para testar.");
 });
-$("logout-btn").addEventListener("click",async()=>{if(client)await client.auth.signOut();session=null;setAuthText("Você saiu da conta.");updateAuthUI();});
+$("forgot-password-btn").addEventListener("click",async()=>{
+ if(!client)return setAuthText("O Supabase ainda não está configurado.");
+ const email=$("user-email").value.trim();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return setAuthText("Digite seu e-mail cadastrado no campo E-mail de acesso.");
+ $("forgot-password-btn").disabled=true;
+ setAuthText("Solicitando e-mail de recuperação...");
+ try{
+   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:"https://francareisleal.github.io/norte-ai/"});
+   if(error)throw error;
+   setAuthText("Se este e-mail estiver cadastrado e permitido no Supabase, você receberá um link para redefinir a senha. Confira também a pasta Spam.");
+ }catch(e){
+   setAuthText("Não foi possível enviar o e-mail. Confira Authentication → URL Configuration e as configurações de e-mail do Supabase.");
+ }finally{
+   $("forgot-password-btn").disabled=false;
+ }
+});
+$("change-password-btn").addEventListener("click",async()=>{
+ if(!client||!session)return setAuthText("Link expirado. Solicite um novo e-mail de recuperação.");
+ const password=$("new-password").value,confirm=$("confirm-password").value;
+ if(password.length<12)return setAuthText("Use uma senha de pelo menos 12 caracteres.");
+ if(password!==confirm)return setAuthText("As senhas não coincidem.");
+ $("change-password-btn").disabled=true;
+ setAuthText("Salvando nova senha...");
+ try{
+   const {error}=await client.auth.updateUser({password});
+   if(error)throw error;
+   $("new-password").value="";
+   $("confirm-password").value="";
+   recoveringPassword=false;
+   updateAuthUI();
+   setAuthText("Senha atualizada! Sua conta está conectada. Você pode acessar a Mentoria.");
+ }catch(e){setAuthText("Não foi possível alterar a senha. Tente solicitar um novo link.");}
+ finally{$("change-password-btn").disabled=false;}
+});
+$("cancel-password-btn").addEventListener("click",()=>{
+ recoveringPassword=false;
+ $("new-password").value="";
+ $("confirm-password").value="";
+ updateAuthUI();
+ setAuthText("Recuperação cancelada.");
+});
+$("logout-btn").addEventListener("click",async()=>{
+ if(client)await client.auth.signOut();
+ session=null;
+ recoveringPassword=false;
+ setAuthText("Você saiu da conta.");
+ updateAuthUI();
+});
 function renderAll(){renderHome();renderTasks();renderJournal();renderChat();}
 renderAll();initCloud();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
