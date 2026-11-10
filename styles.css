@@ -13,3 +13,45 @@ body{background:radial-gradient(ellipse at 50% -160px,#174E59 0%,var(--bg) 46%);
 .primary:hover,.composer button:hover{background:#F0DEBF}
 .secondary:hover,.quick button:hover{border-color:var(--gold)}
 @media(prefers-reduced-motion:no-preference){.card,.energy button,.primary,.secondary{transition:border-color .18s ease,background-color .18s ease}}
+
+/* PRUMO · Renda extra — controles locais e responsivos. */
+.bottom{grid-template-columns:repeat(6,minmax(0,1fr));padding-left:3px;padding-right:3px}
+.bottom button{min-width:0;font-size:9px;line-height:1.35}
+.bottom button span{font-size:21px;width:36px;height:33px}
+.income-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 16px}
+.income-stat{padding:15px 10px;min-width:0}
+.income-stat small{display:block;color:var(--muted);font-size:11px;line-height:1.5}
+.income-stat strong{display:block;margin-top:7px;color:var(--sand);font-size:clamp(13px,3.7vw,20px);font-weight:850;letter-spacing:-.04em;overflow-wrap:anywhere}
+.income-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px;row-gap:14px;margin-bottom:13px}
+.income-two-col>div{min-width:0}
+.income-two-col input,.income-two-col select{min-width:0}
+.income-progress{height:9px;background:#335963;border:1px solid #48737B;border-radius:99px;overflow:hidden;margin-top:16px}
+.income-progress span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4F7C72,#C9A76A,#E6D3B3);transition:width .2s ease}
+.income-subtle{font-size:12px;color:var(--muted);line-height:1.65;margin:8px 0}
+.income-weekly{margin-bottom:18px}
+.income-filter-row{margin:17px 0 12px;justify-content:space-between;gap:12px}
+.income-filter-row label{margin:0;flex:1;font-size:12px}
+.income-filter-row select{max-width:60%}
+.income-item{padding:16px 17px}
+.income-item-head{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.income-item-head>div{min-width:0}
+.income-item-head strong{font-size:14px;display:block;overflow-wrap:anywhere}
+.income-item-head small{display:block;font-size:11px;color:var(--muted);line-height:1.5;margin-top:5px}
+.income-item-value{color:var(--sand);white-space:nowrap;font-weight:850!important}
+.income-offer{font-size:13px;line-height:1.6;margin:12px 0;color:#E7ECE9;overflow-wrap:anywhere}
+.income-stage-label{display:block;font-size:11px;color:var(--muted)}
+.income-stage-label select{margin-top:6px}
+.income-next{font-size:12px;line-height:1.65;color:#CCDCD9;margin:12px 0;overflow-wrap:anywhere}
+.income-actions{display:flex;gap:9px;flex-wrap:wrap}
+.income-actions button{padding:9px 14px}
+#income-message{margin-top:12px;line-height:1.6;font-size:13px;background:#092A33}
+#income-copy{margin-left:auto}
+@media(max-width:420px){
+ .income-two-col{grid-template-columns:1fr;gap:3px}
+ .income-two-col>div{margin-bottom:6px}
+ .bottom button{font-size:9px}
+ .bottom button span{width:33px}
+ .income-stat{padding:12px 8px}
+ .income-stat strong{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.income-progress span{transition:none}}
