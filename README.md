@@ -1,6 +1,6 @@
-# NORTE AI — Web App (PWA)
+# PRUMO — Web App (PWA)
 
-Sua direção, no seu ritmo.
+Encontre seu caminho, no seu ritmo.
 
 Protótipo pessoal de mentoria e planejamento em português. Esta implementação está hospedada no GitHub Pages e **não é ainda um chatbot conectado à API OpenAI**.
 
