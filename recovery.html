@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0a1712">
-  <title>Recuperar senha · NORTE AI</title>
+  <title>Recuperar senha · PRUMO</title>
   <style>
     :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#ecf5ed;background:#0a1712;color-scheme:dark}
     *{box-sizing:border-box}body{margin:0;padding:22px;min-height:100vh;display:flex;align-items:center;justify-content:center}
@@ -19,10 +19,10 @@
 </head>
 <body>
 <main>
-  <div class="brand"><span class="star">✳</span>NORTE <b>AI</b></div>
+  <div class="brand"><span class="star">✳</span>PRU<b>MO</b></div>
   <article>
     <h1>Criar nova senha</h1>
-    <p>Este é o espaço seguro para redefinir sua senha pessoal de acesso à NORTE AI.</p>
+    <p>Este é o espaço seguro para redefinir sua senha pessoal de acesso à PRUMO.</p>
     <p class="message" id="status" role="status" aria-live="polite">Verificando seu link de recuperação...</p>
     <form id="form" hidden>
       <label for="password">Nova senha</label>
@@ -32,7 +32,7 @@
       <button id="save" type="submit">Salvar nova senha</button>
     </form>
     <p class="small">Não compartilhe o link deste e-mail nem sua senha com outras pessoas.</p>
-    <a href="./">Voltar à NORTE AI</a>
+    <a href="./">Voltar à PRUMO</a>
   </article>
 </main>
 <script src="./config.js?v=20261110f"></script>
@@ -49,7 +49,7 @@
   if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(cfg.supabaseUrl||"")||!String(cfg.supabasePublishableKey||"").startsWith("sb_publishable_")){
     setMessage("O projeto Supabase ainda não foi configurado.");
   }else if(failure){
-    setMessage("Este link não pôde ser confirmado ou expirou. Solicite um novo e-mail em Ajustes da NORTE AI.");
+    setMessage("Este link não pôde ser confirmado ou expirou. Solicite um novo e-mail em Ajustes da PRUMO.");
     history.replaceState(null,"",location.pathname);
   }else{
     try{
@@ -75,7 +75,7 @@
           showSession(result.data.session);
         }
       }
-      if(!session)setMessage("Não foi possível validar o link neste navegador. Ele pode ter expirado ou já ter sido utilizado. Solicite outro link na NORTE AI e abra-o diretamente no Chrome.");
+      if(!session)setMessage("Não foi possível validar o link neste navegador. Ele pode ter expirado ou já ter sido utilizado. Solicite outro link na PRUMO e abra-o diretamente no Chrome.");
     }catch(e){
       setMessage("Não foi possível validar este link de recuperação. Tente solicitar um novo e-mail e abri-lo no Chrome.");
     }
@@ -94,7 +94,7 @@
     save.disabled=false;
     if(error){setMessage("Não foi possível alterar a senha. Verifique se o link ainda está válido ou solicite outro.");return;}
     form.hidden=true;
-    setMessage("Senha alterada com sucesso! Abra a NORTE AI e entre com seu e-mail e sua nova senha.");
+    setMessage("Senha alterada com sucesso! Abra a PRUMO e entre com seu e-mail e sua nova senha.");
     history.replaceState(null,"",location.pathname);
   });
 </script>
