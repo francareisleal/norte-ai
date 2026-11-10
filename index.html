@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1712">
+<meta name="description" content="NORTE AI — mentoria e planejamento pessoal e profissional.">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>NORTE AI · Sua direção, no seu ritmo</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="logo"><span class="brandmark">✳</span><span>NORTE <b>AI</b></span></div><span class="status"><i></i> SUA DIREÇÃO, NO SEU RITMO</span></header>
+<main>
+<section id="page-hoje" class="page">
+  <div class="hero"><div class="eyebrow">✦ SEU ESPAÇO DE CRESCIMENTO</div><h1>Um passo de cada <em>vez.</em></h1><p>Organize o que importa sem transformar seus planos em cobrança.</p><span class="hero-orbit">✳</span></div>
+  <div class="sectitle"><h2>Como está sua energia hoje?</h2><small>Seu ritmo importa</small></div>
+  <div class="energy" id="energy-buttons"><button data-energy="1">😴<small>Baixa</small></button><button data-energy="2">😕<small>Pouca</small></button><button data-energy="3">🙂<small>Média</small></button><button data-energy="4">😊<small>Boa</small></button><button data-energy="5">⚡<small>Alta</small></button></div>
+  <article class="card suggestion"><div class="eyebrow">✧ SUGESTÃO PARA HOJE</div><h3 id="daily-title">Um objetivo possível.</h3><p id="daily-text">Escolha sua energia para receber uma sugestão compatível com seu dia.</p><button class="textlink" data-go="planos">Ir ao planejamento ›</button></article>
+  <div class="sectitle"><h2>Sua próxima prioridade</h2></div><div id="today-priority" class="empty">Nenhuma tarefa pendente. Que tal definir um passo simples?</div>
+  <div class="stats"><div class="card"><strong id="done-count">0</strong><small>Tarefas concluídas</small></div><div class="card"><strong id="project-count">0</strong><small>Projetos</small></div></div>
+</section>
+<section id="page-mentoria" class="page" hidden>
+  <div class="pagehead"><div class="eyebrow">✦ SEU ESPAÇO DE REFLEXÃO</div><h1>Mentoria</h1><p>Converse sobre carreira, escolhas, rotina e projetos.</p></div>
+  <div class="notice" id="ai-mode">● Modo guiado ativo — respostas locais, ainda sem IA generativa.</div>
+  <div class="quick"><button data-prompt="Estou sobrecarregada. Como reorganizar meu dia?">♡ Estou sobrecarregada</button><button data-prompt="Quero avançar na minha carreira. Por onde começo?">↗ Minha carreira</button><button data-prompt="Tenho muitos projetos e preciso escolher uma prioridade.">✳ Meus projetos</button><button data-prompt="Sinto que estou atrasada na vida.">☀ Autocobrança</button></div>
+  <div class="chat" id="chat-list" aria-live="polite"></div>
+  <form id="chat-form" class="composer"><textarea id="chat-input" rows="2" maxlength="4000" placeholder="O que você gostaria de conversar?" required></textarea><button type="submit" aria-label="Enviar">➤</button></form>
+  <p class="hint">A NORTE é uma ferramenta de apoio, não substitui acompanhamento de saúde mental nem decide por você.</p>
+</section>
+<section id="page-planos" class="page" hidden>
+  <div class="pagehead"><div class="eyebrow">✦ TRANSFORME PLANOS EM AÇÃO</div><h1>Planejamento</h1><p>Menos dispersão, mais passos sustentáveis.</p></div>
+  <div class="sectitle"><h2>Suas tarefas</h2></div>
+  <form id="task-form" class="card formcard"><label for="task-name">Nova tarefa</label><input id="task-name" maxlength="140" placeholder="Ex.: revisar a proposta da consultoria" required><div class="formrow"><select id="task-category"><option>Pessoal</option><option>Profissional</option><option>Estudos</option><option>Projetos</option></select><button type="submit" class="primary">Adicionar</button></div></form>
+  <div id="task-list" class="stack"></div>
+  <div class="sectitle"><h2>Seus projetos</h2></div>
+  <form id="project-form" class="card formcard"><label for="project-name">Novo projeto ou objetivo</label><input id="project-name" maxlength="140" placeholder="Ex.: consultoria de atendimento" required><div class="formrow"><input id="project-next" maxlength="180" placeholder="Próximo passo (opcional)"><button type="submit" class="primary">Criar</button></div></form>
+  <div id="project-list" class="stack"></div>
+</section>
+<section id="page-diario" class="page" hidden>
+  <div class="pagehead"><div class="eyebrow">✦ RECONHEÇA SUA JORNADA</div><h1>Diário</h1><p>Registre sentimentos, percepções e pequenas conquistas.</p></div>
+  <form id="journal-form" class="card formcard"><label for="journal-text">Como você está se sentindo?</label><textarea id="journal-text" rows="5" maxlength="6000" placeholder="Escreva sem se cobrar por uma resposta perfeita..." required></textarea><div class="formrow"><small>Seus registros ficam neste navegador.</small><button type="submit" class="primary">Salvar reflexão</button></div></form>
+  <div class="sectitle"><h2>Suas reflexões</h2></div><div id="journal-list" class="stack"></div>
+</section>
+<section id="page-ajustes" class="page" hidden>
+  <div class="pagehead"><div class="eyebrow">✦ VOCÊ NO CONTROLE</div><h1>Ajustes</h1><p>Privacidade, backup e conexão futura com IA generativa.</p></div>
+  <div class="card formcard"><h2>Inteligência artificial</h2><p id="api-status" class="muted">Sem conexão com IA generativa.</p><p class="hint">A chave secreta da OpenAI nunca deve ser colocada neste site público. Use um servidor seguro.</p><div id="login-panel" hidden><label for="user-email">E-mail de acesso</label><input type="email" id="user-email" autocomplete="username" placeholder="seu@email.com"><label for="user-password">Senha</label><input type="password" id="user-password" autocomplete="current-password" placeholder="Sua senha"><div class="formrow"><button id="login-btn" type="button" class="primary">Entrar</button><button id="logout-btn" type="button" class="secondary">Sair</button></div><p id="login-message" class="hint" role="status"></p></div></div>
+  <div class="card formcard"><h2>Dados e privacidade</h2><p class="muted">Tarefas, diário e histórico são guardados no armazenamento local deste navegador. Não estão sincronizados nem têm criptografia específica do aplicativo.</p><div class="formrow wrap"><button id="export-btn" type="button" class="secondary">Exportar backup</button><button id="import-btn" type="button" class="secondary">Importar backup</button><input id="import-file" type="file" accept="application/json,.json" hidden></div><div class="formrow wrap"><button id="clear-chat" type="button" class="secondary">Limpar conversa</button><button id="clear-data" type="button" class="danger">Apagar dados locais</button></div></div>
+  <p class="hint">Versão web inicial · NORTE AI. Use somente dados pessoais de teste até configurar uma solução segura de armazenamento.</p>
+</section>
+</main>
+<nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
+</div><div id="toast" role="status" aria-live="polite"></div>
+<script src="./config.js"></script><script src="./app.js" defer></script>
+</body></html>
