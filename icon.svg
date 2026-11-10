@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="114" fill="#11271a"/><rect x="56" y="56" width="400" height="400" rx="100" fill="#c4ed8b"/><path d="M257 115 291 218 397 258 291 294 257 398 221 294 116 258 221 218Z" fill="#173c25"/><circle cx="257" cy="256" r="25" fill="#c4ed8b"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PRUMO — bússola dourada">
+ <defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17616A"/><stop offset=".58" stop-color="#0B3D4A"/><stop offset="1" stop-color="#072D38"/></linearGradient>
+  <linearGradient id="metal" x1=".25" y1="0" x2=".8" y2="1"><stop stop-color="#F5DEB5"/><stop offset=".55" stop-color="#D9AC65"/><stop offset="1" stop-color="#B98A49"/></linearGradient>
+ </defs>
+ <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+ <rect x="8" y="8" width="496" height="496" rx="102" fill="none" stroke="#D0AA68" stroke-opacity=".18" stroke-width="2"/>
+ <circle cx="256" cy="256" r="166" fill="none" stroke="#E6D3B3" stroke-opacity=".75" stroke-width="9" stroke-dasharray="206 53" transform="rotate(-37 256 256)"/>
+ <circle cx="256" cy="256" r="139" fill="none" stroke="#F7E6C8" stroke-opacity=".11" stroke-width="2"/>
+ <path d="M256 105 283 229 408 256 283 283 256 407 229 283 104 256 229 229Z" fill="url(#metal)"/>
+ <path d="M256 105 283 229 256 256 229 229Z" fill="#FFF0D0"/>
+ <path d="M104 256 229 229 256 256 229 283Z" fill="#F0D7AA"/>
+ <path d="M256 256 283 283 256 407 229 283Z" fill="#9C793F"/>
+ <circle cx="256" cy="256" r="14" fill="#0B3D4A" stroke="#F5E2BD" stroke-width="4"/>
+</svg>
