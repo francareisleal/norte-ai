@@ -1,11 +1,11 @@
 // NORTE AI — cache versionado. Atualizações não apagam localStorage.
-const CACHE = "norte-static-v3";
+const CACHE = "norte-static-v4";
 const STATIC = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app.js?v=20261110c",
-  "./config.js?v=20261110c",
+  "./app.js?v=20261110d",
+  "./config.js?v=20261110d",
   "./manifest.webmanifest",
   "./icon.svg"
 ];
