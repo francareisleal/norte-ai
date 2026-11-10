@@ -68,6 +68,25 @@ function guided(text){
  if(/planej|rotina|prioridade|tempo|organiza|tarefa/.test(q))return "Podemos começar com uma estrutura leve: uma prioridade essencial, uma tarefa opcional e um espaço de descanso.\n\nAbra a aba Planos e registre o próximo passo mais simples. O que você precisa resolver primeiro?";
  return "Obrigada por compartilhar. Quero te ajudar a olhar para isso com cuidado, sem impor uma resposta pronta.\n\nO que você mais gostaria de compreender ou decidir sobre essa situação? Podemos transformar essa reflexão em um passo concreto.";
 }
+async function explainAIError(error){
+ const status=Number(error?.context?.status||0);
+ let code="";
+ try{
+   const body=await error?.context?.clone?.().json?.();
+   const safe=String(body?.error||body?.code||"");
+   if(["Conta não autorizada.","Chave OpenAI não configurada.","Chave OpenAI ainda não configurada.","Histórico inválido.","Falha na API da IA.","Falha ao consultar a IA.","Resposta vazia.","Acesso privado não configurado."].includes(safe))code=safe;
+ }catch(e){}
+ if(status===401)return "Erro 401: o token de login foi rejeitado. Saia e entre novamente em Ajustes. Se continuar, confira a configuração de autenticação da função no Supabase.";
+ if(status===403)return "Erro 403: a conta conectada não corresponde ao identificador permitido. Confira NORTE_ALLOWED_USER_ID no Supabase (deve ser o UID do usuário de Authentication → Users).";
+ if(status===404)return "Erro 404: a função norte-mentor não foi encontrada no projeto Supabase. Verifique o nome e a implantação.";
+ if(status===429)return "Erro 429: limite temporário de uso. Verifique os limites do Supabase e da OpenAI.";
+ if(status===500)return "Erro 500: erro interno da função. Abra Supabase → Edge Functions → norte-mentor → Logs.";
+ if(status===502)return "Erro 502: o servidor não conseguiu obter resposta da OpenAI. Verifique crédito da API, modelo, segredo OPENAI_API_KEY e Logs da função.";
+ if(status===503)return "Erro 503: falta alguma configuração no servidor. "+(code||"Confira os Secrets da função no Supabase.");
+ if(status===400)return "Erro 400: requisição de mentoria inválida. Confira a versão da função implantada.";
+ if(status)return "Erro HTTP "+status+". Confira Supabase → Edge Functions → norte-mentor → Invocations e Logs.";
+ return "A chamada não chegou corretamente ao Supabase (possível rede, CORS ou falha de conexão). Verifique a internet e os registros da função.";
+}
 async function send(text){
  if(!text.trim())return;
  state.chat.push({role:"user",content:text.trim()});persist();renderChat();
@@ -78,11 +97,12 @@ async function send(text){
      const history=state.chat.slice(-15).map(m=>({role:m.role,content:m.content}));
      const context={energy:state.energy,tasks:state.tasks.slice(0,15).map(t=>({title:t.title,done:t.done,category:t.category})),projects:state.projects.slice(0,10).map(p=>({title:p.title,next:p.next}))};
      const {data,error}=await client.functions.invoke("norte-mentor",{body:{history,context}});
-     if(error){let msg="Falha ao consultar a IA.";try{const body=await error.context?.json?.();if(body?.error)msg=String(body.error);}catch(e){}throw new Error(msg);}
-     if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("A IA não retornou uma resposta.");
+     if(error)throw new Error(await explainAIError(error));
+     if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("O servidor respondeu, mas não enviou texto. Confira os Logs.");
      response=data.reply;
-   }else response=guided(text);
- }catch(e){response="Não foi possível conectar à IA generativa. Verifique login, função do servidor e sua conexão. Você ainda pode usar a mentoria guiada.";toast("IA online indisponível.");}
+   }else if(ready&&!session)response="Ainda não está conectada à IA. Abra Ajustes, entre com o e-mail e a senha do usuário do Supabase e tente novamente.";
+   else response=guided(text);
+ }catch(e){response="Não foi possível conectar à IA generativa.\n\n"+String(e?.message||"Erro desconhecido.")+"\n\nSe preferir, pode continuar usando o planejamento e o diário.";toast("Verifique o diagnóstico na conversa.");}
  state.chat.push({role:"assistant",content:response});persist();renderChat();submit.disabled=false;input.focus();
 }
 $("chat-form").addEventListener("submit",e=>{e.preventDefault();const field=$("chat-input");const v=field.value.trim();if(!v)return;field.value="";send(v);});
