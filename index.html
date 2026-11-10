@@ -4,13 +4,13 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071F27">
 <meta name="description" content="PRUMO — mentoria e planejamento pessoal e profissional.">
-<link rel="manifest" href="./manifest.webmanifest?v=20261110i"><link rel="icon" href="./icon.svg?v=20261110i" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest?v=20261110j"><link rel="icon" href="./icon.svg?v=20261110j" type="image/svg+xml">
 <title>PRUMO · Encontre seu caminho, no seu ritmo</title>
-<link rel="stylesheet" href="./styles.css?v=20261110i">
+<link rel="stylesheet" href="./styles.css?v=20261110j">
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="logo"><span class="brandmark"><img src="./icon.svg?v=20261110i" alt=""></span><span>PRU<b>MO</b></span></div><span class="status"><i></i> SEU CAMINHO, NO SEU RITMO</span></header>
+<header class="top"><div class="logo"><span class="brandmark"><img src="./icon.svg?v=20261110j" alt=""></span><span>PRU<b>MO</b></span></div><span class="status"><i></i> SEU CAMINHO, NO SEU RITMO</span></header>
 <main>
 <section id="page-hoje" class="page">
   <div class="hero"><div class="eyebrow">✦ SEU ESPAÇO DE CRESCIMENTO</div><h1>Um passo de cada <em>vez.</em></h1><p>Organize o que importa sem transformar seus planos em cobrança.</p><span class="hero-orbit">✦</span></div>
@@ -18,6 +18,7 @@
   <div class="energy" id="energy-buttons"><button data-energy="1">😴<small>Baixa</small></button><button data-energy="2">😕<small>Pouca</small></button><button data-energy="3">🙂<small>Média</small></button><button data-energy="4">😊<small>Boa</small></button><button data-energy="5">⚡<small>Alta</small></button></div>
   <article class="card suggestion"><div class="eyebrow">✧ SUGESTÃO PARA HOJE</div><h3 id="daily-title">Um objetivo possível.</h3><p id="daily-text">Escolha sua energia para receber uma sugestão compatível com seu dia.</p><button class="textlink" data-go="planos">Ir ao planejamento ›</button></article>
   <div class="sectitle"><h2>Sua próxima prioridade</h2></div><div id="today-priority" class="empty">Nenhuma tarefa pendente. Que tal definir um passo simples?</div>
+  <div class="formrow"><button type="button" class="textlink" data-go="renda">◇ Organizar minha renda extra ›</button></div>
   <div class="stats"><div class="card"><strong id="done-count">0</strong><small>Tarefas concluídas</small></div><div class="card"><strong id="project-count">0</strong><small>Projetos</small></div></div>
 </section>
 <section id="page-mentoria" class="page" hidden>
@@ -37,6 +38,60 @@
   <form id="project-form" class="card formcard"><label for="project-name">Novo projeto ou objetivo</label><input id="project-name" maxlength="140" placeholder="Ex.: consultoria de atendimento" required><div class="formrow"><input id="project-next" maxlength="180" placeholder="Próximo passo (opcional)"><button type="submit" class="primary">Criar</button></div></form>
   <div id="project-list" class="stack"></div>
 </section>
+
+<section id="page-renda" class="page" hidden>
+  <div class="pagehead"><div class="eyebrow">✦ CONSTRUA SUA RENDA EXTRA NO SEU RITMO</div><h1>Renda extra</h1><p>Organize oportunidades, clientes, propostas e pagamentos sem depender de IA paga. Um contato de cada vez.</p></div>
+  <div class="income-summary" aria-label="Resumo da renda extra">
+    <div class="card income-stat"><small>Recebido</small><strong id="income-received">R$ 0</strong></div>
+    <div class="card income-stat"><small>A receber</small><strong id="income-pending">R$ 0</strong></div>
+    <div class="card income-stat"><small>Em negociação</small><strong id="income-potential">R$ 0</strong></div>
+  </div>
+  <form id="income-settings-form" class="card formcard">
+    <h2>Sua meta e seu tempo</h2>
+    <p class="muted">Os valores são somas dos registros que você incluir, não previsões garantidas.</p>
+    <div class="income-two-col">
+      <div><label for="income-goal">Meta de recebimentos (R$)</label><input id="income-goal" type="number" min="0" max="1000000" step="0.01" inputmode="decimal" value="1000"></div>
+      <div><label for="income-hours">Horas disponíveis por semana</label><input id="income-hours" type="number" min="0.5" max="40" step="0.5" inputmode="decimal" value="2"></div>
+    </div>
+    <div class="income-progress" role="progressbar" aria-label="Progresso da meta de recebimentos" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="income-progress"><span id="income-progress-fill"></span></div>
+    <p class="income-subtle" id="income-progress-label">R$ 0 recebidos da meta de R$ 1.000.</p>
+    <div class="formrow"><small id="income-time-info">Até 2 horas por semana.</small><button type="submit" class="primary">Salvar meta</button></div>
+  </form>
+  <article class="card suggestion income-weekly">
+    <div class="eyebrow">✧ PRÓXIMO PASSO POSSÍVEL</div>
+    <h3 id="income-action-title">Comece com uma oportunidade.</h3>
+    <p id="income-action-text">Cadastre um contato de consultoria, escrita ou viagens esportivas e defina uma ação pequena.</p>
+  </article>
+  <div class="sectitle"><h2>Suas oportunidades</h2></div>
+  <form id="income-form" class="card formcard">
+    <h2 id="income-form-title">Nova oportunidade</h2>
+    <div class="income-two-col">
+      <div><label for="income-service">Tipo de serviço</label><select id="income-service"><option>Consultoria em atendimento</option><option>Escrita freelancer</option><option>Viagens esportivas</option><option>Outro serviço</option></select></div>
+      <div><label for="income-client">Cliente ou contato</label><input id="income-client" maxlength="100" placeholder="Ex.: Loja da região" required></div>
+    </div>
+    <label for="income-title">O que você vai oferecer?</label><input id="income-title" maxlength="150" placeholder="Ex.: Diagnóstico de atendimento de 1 hora" required>
+    <div class="income-two-col">
+      <div><label for="income-value">Valor proposto (R$)</label><input id="income-value" type="number" min="0" max="1000000" step="0.01" inputmode="decimal" placeholder="200,00" required></div>
+      <div><label for="income-stage">Etapa</label><select id="income-stage"><option value="Contato">Primeiro contato</option><option value="Proposta">Proposta enviada</option><option value="Fechado">Serviço fechado</option><option value="Entregue">Serviço entregue</option><option value="Recebido">Pagamento recebido</option><option value="Perdido">Não avançou</option></select></div>
+    </div>
+    <label for="income-next">Próximo passo prático</label><input id="income-next" maxlength="180" placeholder="Ex.: mandar apresentação por WhatsApp">
+    <div class="income-two-col">
+      <div><label for="income-date">Data da próxima ação (opcional)</label><input id="income-date" type="date"></div>
+      <div><label for="income-minutes">Tempo estimado da ação (min)</label><input id="income-minutes" type="number" min="5" max="1200" step="5" inputmode="numeric" value="25"></div>
+    </div>
+    <div class="formrow wrap"><button type="submit" class="primary" id="income-save">Salvar oportunidade</button><button type="button" class="secondary" id="income-cancel" hidden>Cancelar edição</button></div>
+  </form>
+  <div class="formrow income-filter-row"><label for="income-filter">Filtrar oportunidades</label><select id="income-filter"><option value="Todas">Todas</option><option value="Contato">Primeiro contato</option><option value="Proposta">Propostas enviadas</option><option value="Fechado">Fechadas</option><option value="Entregue">Entregues</option><option value="Recebido">Recebidas</option><option value="Perdido">Não avançaram</option></select></div>
+  <div id="income-list" class="stack" aria-live="polite"></div>
+  <div class="sectitle"><h2>Mensagem pronta para abordar clientes</h2></div>
+  <div class="card formcard">
+    <label for="income-template">Modelo de apresentação — adapte ao seu serviço</label>
+    <select id="income-template"><option value="consultoria">Consultoria em atendimento</option><option value="escrita">Escrita freelancer</option><option value="viagem">Viagens esportivas</option></select>
+    <textarea id="income-message" rows="7" readonly aria-label="Mensagem modelo para copiar"></textarea>
+    <div class="formrow wrap"><small>Personalize a mensagem antes de enviar.</small><button id="income-copy" class="secondary" type="button">Copiar mensagem</button></div>
+  </div>
+  <p class="hint">Privacidade: oportunidades e valores ficam salvos neste navegador e nos seus backups, sem sincronização ou criptografia específica. Use apelidos ou iniciais dos clientes e não registre informações confidenciais.</p>
+</section>
 <section id="page-diario" class="page" hidden>
   <div class="pagehead"><div class="eyebrow">✦ RECONHEÇA SUA JORNADA</div><h1>Diário</h1><p>Registre sentimentos, percepções e pequenas conquistas.</p></div>
   <form id="journal-form" class="card formcard"><label for="journal-text">Como você está se sentindo?</label><textarea id="journal-text" rows="5" maxlength="6000" placeholder="Escreva sem se cobrar por uma resposta perfeita..." required></textarea><div class="formrow"><small>Seus registros ficam neste navegador.</small><button type="submit" class="primary">Salvar reflexão</button></div></form>
@@ -49,7 +104,7 @@
   <p class="hint">Versão web inicial · PRUMO. Use somente dados pessoais de teste até configurar uma solução segura de armazenamento.</p>
 </section>
 </main>
-<nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
+<nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="renda"><span>◇</span>Renda</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
 </div><div id="toast" role="status" aria-live="polite"></div>
-<script src="./config.js?v=20261110i"></script><script src="./app.js?v=20261110i" defer></script>
+<script src="./config.js?v=20261110j"></script><script src="./app.js?v=20261110j" defer></script>
 </body></html>
