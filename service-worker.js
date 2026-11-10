@@ -1,11 +1,11 @@
-// NORTE AI — cache versionado. Atualizações não apagam localStorage.
-const CACHE = "norte-static-v7";
+// PRUMO — cache versionado. Atualizações não apagam localStorage.
+const CACHE = "norte-static-v8";
 const STATIC = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app.js?v=20261110g",
-  "./config.js?v=20261110g",
+  "./app.js?v=20261110h",
+  "./config.js?v=20261110h",
   "./manifest.webmanifest",
   "./icon.svg"
 ];
