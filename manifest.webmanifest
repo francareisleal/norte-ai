@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "NORTE AI — Sua direção, no seu ritmo",
-  "short_name": "NORTE AI",
-  "description": "Mentoria pessoal e profissional com planejamento adaptativo.",
+  "name": "PRUMO — Encontre seu caminho, no seu ritmo",
+  "short_name": "PRUMO",
+  "description": "Mentoria pessoal e profissional com planejamento adaptativo, no seu ritmo.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
