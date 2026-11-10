@@ -154,7 +154,15 @@ $("forgot-password-btn").addEventListener("click",async()=>{
    if(error)throw error;
    setAuthText("Se este e-mail estiver cadastrado e permitido no Supabase, você receberá um link para redefinir a senha. Confira também a pasta Spam.");
  }catch(e){
-   setAuthText("Não foi possível enviar o e-mail. Confira Authentication → URL Configuration e as configurações de e-mail do Supabase.");
+   const code=String(e?.code||"");
+   const status=Number(e?.status||0);
+   if(status===429||/rate_limit|too_many_requests/i.test(code)){
+     setAuthText("O Supabase atingiu um limite temporário de e-mails. Aguarde cerca de uma hora desde o último envio e tente uma única vez.");
+   }else if(code==="email_address_not_authorized"){
+     setAuthText("O serviço de e-mail do Supabase não está autorizado a enviar para este endereço. Confira as configurações de envio no Supabase.");
+   }else{
+     setAuthText("Não foi possível solicitar a recuperação (código: "+(code||String(status||"desconhecido"))+"). Confira o Supabase e tente novamente mais tarde.");
+   }
  }finally{
    $("forgot-password-btn").disabled=false;
  }
