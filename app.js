@@ -1,9 +1,9 @@
-/* NORTE AI — versão web. Sem chaves privadas no navegador. */
+/* PRUMO — versão web. Sem chaves privadas no navegador. */
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
 const KEY="norte-ai-local-v1";
-const greet="Olá! Sou a NORTE, sua mentora de apoio. Podemos pensar juntas sobre uma decisão, definir uma prioridade ou simplesmente organizar o que está acontecendo. Por onde gostaria de começar?";
+const greet="Olá! Sou a PRUMO, sua mentora de apoio. Podemos pensar juntas sobre uma decisão, definir uma prioridade ou simplesmente organizar o que está acontecendo. Por onde gostaria de começar?";
 const defaults=()=>({energy:0,tasks:[],projects:[],journal:[],chat:[{role:"assistant",content:greet}]});
 let state=defaults();
 try{const stored=JSON.parse(localStorage.getItem(KEY)||"null");if(stored&&typeof stored==="object")state=Object.assign(defaults(),stored);}catch(e){}
@@ -56,7 +56,7 @@ document.addEventListener("click",e=>{
 });
 function renderChat(){
  const el=$("chat-list");
- el.innerHTML=state.chat.map(m=>'<div class="message '+(m.role==="user"?"user":"assistant")+'"><small>'+(m.role==="user"?"Você":"NORTE")+'</small>'+escape(m.content)+'</div>').join("");
+ el.innerHTML=state.chat.map(m=>'<div class="message '+(m.role==="user"?"user":"assistant")+'"><small>'+(m.role==="user"?"Você":"PRUMO")+'</small>'+escape(m.content)+'</div>').join("");
  el.scrollTop=el.scrollHeight;
 }
 function guided(text){
@@ -108,11 +108,11 @@ async function send(text){
 $("chat-form").addEventListener("submit",e=>{e.preventDefault();const field=$("chat-input");const v=field.value.trim();if(!v)return;field.value="";send(v);});
 for(const button of document.querySelectorAll("[data-prompt]"))button.addEventListener("click",()=>send(button.dataset.prompt));
 $("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("chat-form").requestSubmit();}});
-$("export-btn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:"application/json"});const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download="norte-ai-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);toast("Backup exportado.");});
+$("export-btn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:"application/json"});const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download="prumo-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);toast("Backup exportado.");});
 $("import-btn").addEventListener("click",()=>$("import-file").click());
 $("import-file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const raw=JSON.parse(await file.text());const d=raw.data||raw;if(!Array.isArray(d.tasks)||!Array.isArray(d.projects)||!Array.isArray(d.journal)||!Array.isArray(d.chat))throw Error();if(!confirm("Substituir seus dados locais pelo backup?"))return;state={energy:Number(d.energy)||0,tasks:d.tasks,projects:d.projects,journal:d.journal,chat:d.chat};persist();renderAll();toast("Dados restaurados.");}catch(e){toast("Backup inválido.");}finally{e.target.value="";}});
 $("clear-chat").addEventListener("click",()=>{if(!confirm("Apagar o histórico de conversa deste navegador?"))return;state.chat=[{role:"assistant",content:greet}];persist();renderChat();toast("Conversa apagada.");});
-$("clear-data").addEventListener("click",()=>{if(!confirm("Apagar permanentemente todos os dados locais da NORTE neste navegador?"))return;state=defaults();persist();renderAll();toast("Dados locais apagados.");});
+$("clear-data").addEventListener("click",()=>{if(!confirm("Apagar permanentemente todos os dados locais do PRUMO neste navegador?"))return;state=defaults();persist();renderAll();toast("Dados locais apagados.");});
 function setAuthText(text){$("login-message").textContent=text;}
 let recoveringPassword=false;
 // O link pode abrir uma PWA na página inicial; detectamos a intenção sem registrar tokens.
@@ -124,7 +124,7 @@ function updateAuthUI(){
  $("set-password-btn").hidden=!session;
  $("login-password-field").hidden=recoveringPassword;
  $("password-reset-panel").hidden=!recoveringPassword;
- $("api-status").textContent=recoveringPassword?"Recuperação de senha: defina sua nova senha.":session?"Conta conectada à NORTE. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
+ $("api-status").textContent=recoveringPassword?"Recuperação de senha: defina sua nova senha.":session?"Conta conectada ao PRUMO. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
  $("ai-mode").textContent=session&&!recoveringPassword?"● Conta conectada — teste a mentoria para verificar a IA generativa.":"● Modo guiado — entre em Ajustes para conectar sua conta.";
 }
 async function initCloud(){
