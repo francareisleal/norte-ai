@@ -150,7 +150,7 @@ $("forgot-password-btn").addEventListener("click",async()=>{
  $("forgot-password-btn").disabled=true;
  setAuthText("Solicitando e-mail de recuperação...");
  try{
-   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:"https://francareisleal.github.io/norte-ai/"});
+   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:"https://francareisleal.github.io/norte-ai/recovery.html"});
    if(error)throw error;
    setAuthText("Se este e-mail estiver cadastrado e permitido no Supabase, você receberá um link para redefinir a senha. Confira também a pasta Spam.");
  }catch(e){
