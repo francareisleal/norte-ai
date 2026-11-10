@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a1712">
+  <title>Recuperar senha · NORTE AI</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#ecf5ed;background:#0a1712;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0;padding:22px;min-height:100vh;display:flex;align-items:center;justify-content:center}
+    main{width:100%;max-width:480px}.brand{font-weight:850;letter-spacing:.04em;font-size:23px;margin-bottom:30px}
+    .star{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#c4ed8b;color:#1a3825;margin-right:12px}
+    .brand b{color:#c4ed8b}article{border:1px solid #35543e;background:#162a20;border-radius:23px;padding:26px}
+    h1{font-size:30px;letter-spacing:-.035em;margin:4px 0 12px}p{color:#b3c4b5;line-height:1.6;font-size:14px}
+    label{display:block;font-size:13px;font-weight:750;margin:19px 0 8px}input{width:100%;background:#0a1712;color:#fff;border:1px solid #567561;padding:13px;border-radius:11px;font:inherit}
+    button{display:block;margin-top:20px;background:#c4ed8b;color:#172a19;font-weight:800;border:0;padding:14px 18px;border-radius:12px;cursor:pointer}
+    button:disabled{opacity:.6}.message{margin:16px 0;padding:12px 14px;border-radius:10px;background:#263d2c;color:#e2f3de;font-size:13px;line-height:1.6;white-space:pre-wrap}
+    a{color:#c4ed8b;font-size:13px}.small{font-size:12px}form[hidden]{display:none}
+  </style>
+</head>
+<body>
+<main>
+  <div class="brand"><span class="star">✳</span>NORTE <b>AI</b></div>
+  <article>
+    <h1>Criar nova senha</h1>
+    <p>Este é o espaço seguro para redefinir sua senha pessoal de acesso à NORTE AI.</p>
+    <p class="message" id="status" role="status" aria-live="polite">Verificando seu link de recuperação...</p>
+    <form id="form" hidden>
+      <label for="password">Nova senha</label>
+      <input id="password" type="password" minlength="12" autocomplete="new-password" placeholder="Mínimo de 12 caracteres" required>
+      <label for="confirm">Confirme a nova senha</label>
+      <input id="confirm" type="password" minlength="12" autocomplete="new-password" placeholder="Repita a nova senha" required>
+      <button id="save" type="submit">Salvar nova senha</button>
+    </form>
+    <p class="small">Não compartilhe o link deste e-mail nem sua senha com outras pessoas.</p>
+    <a href="./">Voltar à NORTE AI</a>
+  </article>
+</main>
+<script src="./config.js?v=20261110f"></script>
+<script type="module">
+  const status=document.getElementById("status");
+  const form=document.getElementById("form");
+  const save=document.getElementById("save");
+  const cfg=window.NORTE_CONFIG||{};
+  const setMessage=(msg)=>{status.textContent=msg;};
+  const query=new URLSearchParams(location.search);
+  const fragment=new URLSearchParams(location.hash.slice(1));
+  const failure=query.get("error_description")||fragment.get("error_description");
+  let supabase=null,session=null;
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(cfg.supabaseUrl||"")||!String(cfg.supabasePublishableKey||"").startsWith("sb_publishable_")){
+    setMessage("O projeto Supabase ainda não foi configurado.");
+  }else if(failure){
+    setMessage("Este link não pôde ser confirmado ou expirou. Solicite um novo e-mail em Ajustes da NORTE AI.");
+    history.replaceState(null,"",location.pathname);
+  }else{
+    try{
+      const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.95.0?bundle");
+      supabase=createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      const showSession=(s)=>{
+        if(!s)return;
+        session=s;
+        form.hidden=false;
+        setMessage("Link reconhecido. Defina sua nova senha para continuar.");
+        history.replaceState(null,"",location.pathname);
+      };
+      supabase.auth.onAuthStateChange((_event,s)=>{showSession(s);});
+      const {data,error}=await supabase.auth.getSession();
+      if(error)throw error;
+      if(data.session){showSession(data.session);}
+      else{
+        // Alguns navegadores entregam tokens no fragmento sem concluir a sessão automaticamente.
+        const access=fragment.get("access_token"),refresh=fragment.get("refresh_token");
+        if(access&&refresh){
+          const result=await supabase.auth.setSession({access_token:access,refresh_token:refresh});
+          if(result.error)throw result.error;
+          showSession(result.data.session);
+        }
+      }
+      if(!session)setMessage("Não foi possível validar o link neste navegador. Ele pode ter expirado ou já ter sido utilizado. Solicite outro link na NORTE AI e abra-o diretamente no Chrome.");
+    }catch(e){
+      setMessage("Não foi possível validar este link de recuperação. Tente solicitar um novo e-mail e abri-lo no Chrome.");
+    }
+  }
+  form.addEventListener("submit",async(event)=>{
+    event.preventDefault();
+    if(!supabase||!session){setMessage("A autenticação do link expirou. Solicite outro link.");return;}
+    const pass=document.getElementById("password").value;
+    const confirm=document.getElementById("confirm").value;
+    if(pass.length<12){setMessage("Escolha uma senha de pelo menos 12 caracteres.");return;}
+    if(pass!==confirm){setMessage("As senhas não coincidem.");return;}
+    save.disabled=true;setMessage("Salvando a nova senha...");
+    const {error}=await supabase.auth.updateUser({password:pass});
+    document.getElementById("password").value="";
+    document.getElementById("confirm").value="";
+    save.disabled=false;
+    if(error){setMessage("Não foi possível alterar a senha. Verifique se o link ainda está válido ou solicite outro.");return;}
+    form.hidden=true;
+    setMessage("Senha alterada com sucesso! Abra a NORTE AI e entre com seu e-mail e sua nova senha.");
+    history.replaceState(null,"",location.pathname);
+  });
+</script>
+</body>
+</html>
