@@ -95,10 +95,13 @@ $("clear-chat").addEventListener("click",()=>{if(!confirm("Apagar o histórico d
 $("clear-data").addEventListener("click",()=>{if(!confirm("Apagar permanentemente todos os dados locais da NORTE neste navegador?"))return;state=defaults();persist();renderAll();toast("Dados locais apagados.");});
 function setAuthText(text){$("login-message").textContent=text;}
 let recoveringPassword=false;
+// O link pode abrir uma PWA na página inicial; detectamos a intenção sem registrar tokens.
+const recoveryFromLink = new URLSearchParams(location.hash.slice(1)).get("type")==="recovery" || new URLSearchParams(location.search).get("type")==="recovery";
 function updateAuthUI(){
  if(!ready){$("api-status").textContent="Modo guiado. Para ativar IA, configure o Supabase em config.js e publique uma função norte-mentor segura.";return;}
  $("login-panel").hidden=false;
  $("login-controls").hidden=recoveringPassword;
+ $("set-password-btn").hidden=!session;
  $("login-password-field").hidden=recoveringPassword;
  $("password-reset-panel").hidden=!recoveringPassword;
  $("api-status").textContent=recoveringPassword?"Recuperação de senha: defina sua nova senha.":session?"Conta conectada à NORTE. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
@@ -120,6 +123,11 @@ async function initCloud(){
    });
    const r=await client.auth.getSession();
    session=r.data.session;
+   if(recoveryFromLink && session){
+     recoveringPassword=true;
+     go("ajustes");
+     setAuthText("Link recebido. Defina uma senha nova para sua conta.");
+   }
    updateAuthUI();
  }catch(e){
    $("api-status").textContent="Não foi possível carregar o Supabase. Verifique a configuração e a internet.";
@@ -150,6 +158,13 @@ $("forgot-password-btn").addEventListener("click",async()=>{
  }finally{
    $("forgot-password-btn").disabled=false;
  }
+});
+$("set-password-btn").addEventListener("click",()=>{
+ if(!session)return setAuthText("Você precisa abrir o link de recuperação novamente para entrar.");
+ recoveringPassword=true;
+ go("ajustes");
+ updateAuthUI();
+ setAuthText("Defina uma senha nova com pelo menos 12 caracteres.");
 });
 $("change-password-btn").addEventListener("click",async()=>{
  if(!client||!session)return setAuthText("Link expirado. Solicite um novo e-mail de recuperação.");
