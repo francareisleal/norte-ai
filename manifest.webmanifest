@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "NORTE AI — Sua direção, no seu ritmo",
+  "short_name": "NORTE AI",
+  "description": "Mentoria pessoal e profissional com planejamento adaptativo.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a1712",
+  "theme_color": "#0a1712",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
