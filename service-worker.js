@@ -1,13 +1,13 @@
 // PRUMO — cache versionado. Atualizações não apagam localStorage.
-const CACHE = "norte-static-v8";
+const CACHE = "norte-static-v9";
 const STATIC = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js?v=20261110h",
-  "./config.js?v=20261110h",
-  "./manifest.webmanifest",
-  "./icon.svg"
+  "./styles.css?v=20261110i",
+  "./app.js?v=20261110i",
+  "./config.js?v=20261110i",
+  "./manifest.webmanifest?v=20261110i",
+  "./icon.svg?v=20261110i"
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE)
