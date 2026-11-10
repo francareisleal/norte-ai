@@ -4,10 +4,11 @@
 const $=id=>document.getElementById(id);
 const KEY="norte-ai-local-v1";
 const greet="Olá! Sou a PRUMO, sua mentora de apoio. Podemos pensar juntas sobre uma decisão, definir uma prioridade ou simplesmente organizar o que está acontecendo. Por onde gostaria de começar?";
-const defaults=()=>({energy:0,tasks:[],projects:[],journal:[],chat:[{role:"assistant",content:greet}]});
+const defaults=()=>({energy:0,tasks:[],projects:[],journal:[],chat:[{role:"assistant",content:greet}],opportunities:[],incomeSettings:{goal:1000,weeklyMinutes:120}});
 let state=defaults();
 try{const stored=JSON.parse(localStorage.getItem(KEY)||"null");if(stored&&typeof stored==="object")state=Object.assign(defaults(),stored);}catch(e){}
-for(const key of ["tasks","projects","journal","chat"]){if(!Array.isArray(state[key]))state[key]=[];}
+for(const key of ["tasks","projects","journal","chat","opportunities"]){if(!Array.isArray(state[key]))state[key]=[];}
+if(!state.incomeSettings||typeof state.incomeSettings!=="object")state.incomeSettings={goal:1000,weeklyMinutes:120};
 let client=null,session=null;
 const cfg=window.NORTE_CONFIG||{};
 const ready=/^https:\/\/[^/]+\.supabase\.co\/?$/.test(String(cfg.supabaseUrl||""))&&/^(sb_publishable_|eyJ)/.test(String(cfg.supabasePublishableKey||""));
@@ -42,6 +43,153 @@ function renderTasks(){
 }
 $("task-form").addEventListener("submit",e=>{e.preventDefault();const input=$("task-name");const v=input.value.trim();if(!v)return;state.tasks.unshift({id:newId(),title:v,category:$("task-category").value,done:false});input.value="";persist();renderAll();toast("Tarefa adicionada.");});
 $("project-form").addEventListener("submit",e=>{e.preventDefault();const input=$("project-name");const v=input.value.trim();if(!v)return;state.projects.unshift({id:newId(),title:v,next:$("project-next").value.trim()});input.value="";$("project-next").value="";persist();renderAll();toast("Projeto criado.");});
+
+/* Renda Extra — registros locais, sem IA paga e sem transmissão de dados de clientes. */
+const INCOME_STAGES=[["Contato","Primeiro contato"],["Proposta","Proposta enviada"],["Fechado","Serviço fechado"],["Entregue","Serviço entregue"],["Recebido","Pagamento recebido"],["Perdido","Não avançou"]];
+const INCOME_SERVICES=["Consultoria em atendimento","Escrita freelancer","Viagens esportivas","Outro serviço"];
+const INCOME_TEMPLATES={
+ consultoria:"Olá! Tudo bem? Trabalho com atendimento ao cliente e hotelaria e estou oferecendo um diagnóstico prático de atendimento para pequenos negócios. A ideia é identificar oportunidades de melhoria na experiência do cliente e sugerir ações simples para a equipe. Você teria interesse em conhecer a proposta? Posso enviar um resumo sem compromisso.",
+ escrita:"Olá! Tudo bem? Trabalho com produção e revisão de textos profissionais, como apresentações, descrições de serviços e conteúdos institucionais. Posso ajudar seu negócio a comunicar suas ideias com clareza. Se fizer sentido, posso enviar uma proposta com escopo e prazo.",
+ viagem:"Olá! Tudo bem? Estou estruturando experiências e roteiros de viagens esportivas, especialmente para quem deseja acompanhar eventos e competições. Gostaria de ouvir suas preferências para validar a proposta. Posso fazer duas perguntas rápidas?"
+};
+const incomeMoney=v=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number.isFinite(Number(v))?Number(v):0);
+const incomeValue=v=>Math.max(0,Math.min(1000000,Number(v)||0));
+const incomeStage=v=>INCOME_STAGES.some(x=>x[0]===v)?v:"Contato";
+const incomeStageLabel=v=>INCOME_STAGES.find(x=>x[0]===v)?.[1]||"Primeiro contato";
+const incomeDate=v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v||""))?String(v).split("-").reverse().join("/"):"";
+let editingIncomeId=null;
+function incomeResetForm(){
+ editingIncomeId=null;
+ $("income-form").reset();
+ $("income-minutes").value="25";
+ $("income-form-title").textContent="Nova oportunidade";
+ $("income-save").textContent="Salvar oportunidade";
+ $("income-cancel").hidden=true;
+}
+function renderIncomeMessage(){
+ $("income-message").value=INCOME_TEMPLATES[$("income-template").value]||INCOME_TEMPLATES.consultoria;
+}
+function renderIncome(){
+ const os=state.opportunities;
+ const received=os.filter(o=>o.stage==="Recebido").reduce((sum,o)=>sum+incomeValue(o.value),0);
+ const pending=os.filter(o=>["Fechado","Entregue"].includes(o.stage)).reduce((sum,o)=>sum+incomeValue(o.value),0);
+ const potential=os.filter(o=>["Contato","Proposta"].includes(incomeStage(o.stage))).reduce((sum,o)=>sum+incomeValue(o.value),0);
+ $("income-received").textContent=incomeMoney(received);
+ $("income-pending").textContent=incomeMoney(pending);
+ $("income-potential").textContent=incomeMoney(potential);
+ const goal=incomeValue(state.incomeSettings.goal);
+ const minutes=Math.max(30,Math.min(2400,Number(state.incomeSettings.weeklyMinutes)||120));
+ const percentage=goal>0?Math.min(100,Math.round(received/goal*100)):0;
+ $("income-goal").value=goal;
+ $("income-hours").value=minutes/60;
+ $("income-progress-fill").style.width=percentage+"%";
+ $("income-progress").setAttribute("aria-valuenow",String(percentage));
+ $("income-progress-label").textContent=incomeMoney(received)+" recebidos de "+incomeMoney(goal)+" da meta ("+percentage+"%).";
+ const active=os.filter(o=>!["Recebido","Perdido"].includes(o.stage));
+ const planned=active.reduce((sum,o)=>sum+Math.max(0,Math.min(1200,Number(o.minutes)||0)),0);
+ const hrs=(minutes/60).toLocaleString("pt-BR",{maximumFractionDigits:1});
+ $("income-time-info").textContent="Disponível: "+hrs+" h/semana · "+planned+" min estimados nas ações abertas (não são horas trabalhadas).";
+ const priority=active.slice().sort((a,b)=>{
+   const da=/^\d{4}-\d{2}-\d{2}$/.test(a.date||"")?a.date:"9999-12-31";
+   const db=/^\d{4}-\d{2}-\d{2}$/.test(b.date||"")?b.date:"9999-12-31";
+   return da.localeCompare(db);
+ })[0];
+ if(!priority){
+   $("income-action-title").textContent="Comece com uma oportunidade.";
+   $("income-action-text").textContent="Cadastre um possível cliente de consultoria, escrita ou viagens esportivas. Seu primeiro passo pode ser preparar uma mensagem de apresentação de 10 minutos.";
+ }else{
+   $("income-action-title").textContent="Próximo contato: "+String(priority.client||"cliente");
+   const step=String(priority.next||"definir uma ação simples para avançar");
+   const due=incomeDate(priority.date)?" · até "+incomeDate(priority.date):"";
+   const scaled=state.energy>0&&state.energy<=2?"Se sua energia está baixa, faça só 5–10 minutos. ":"";
+   $("income-action-text").textContent=scaled+step+due+". Tempo estimado: "+Math.max(5,Number(priority.minutes)||25)+" min. Você pode ajustar a prioridade editando a oportunidade.";
+ }
+ const filter=$("income-filter").value;
+ const visible=os.filter(o=>filter==="Todas"||incomeStage(o.stage)===filter);
+ $("income-list").innerHTML=visible.length?visible.map(o=>{
+   const stage=incomeStage(o.stage);
+   const service=INCOME_SERVICES.includes(o.service)?o.service:"Outro serviço";
+   const optionHtml=INCOME_STAGES.map(([value,label])=>'<option value="'+value+'"'+(stage===value?' selected':'')+'>'+label+'</option>').join("");
+   return '<article class="card income-item">'+
+      '<div class="income-item-head"><div><strong>'+escape(o.client||"Contato")+'</strong><small>'+escape(service)+'</small></div><strong class="income-item-value">'+incomeMoney(incomeValue(o.value))+'</strong></div>'+
+      '<p class="income-offer">'+escape(o.title||"Serviço")+'</p>'+
+      '<label class="income-stage-label">Etapa<select data-income-stage="'+escape(o.id)+'" aria-label="Etapa de '+escape(o.client||"contato")+'">'+optionHtml+'</select></label>'+
+      '<p class="income-next"><b>Próximo passo:</b> '+escape(o.next||"A definir")+(incomeDate(o.date)?" · "+incomeDate(o.date):"")+' · '+Math.max(5,Number(o.minutes)||25)+' min</p>'+
+      '<div class="income-actions"><button type="button" class="secondary" data-income-edit="'+escape(o.id)+'">Editar</button><button type="button" class="secondary" data-income-delete="'+escape(o.id)+'">Excluir</button></div>'+
+      '</article>';
+ }).join(""):'<div class="empty">Nenhuma oportunidade neste filtro. Cadastre seu primeiro contato acima para começar.</div>';
+ renderIncomeMessage();
+}
+$("income-settings-form").addEventListener("submit",e=>{
+ e.preventDefault();
+ const goal=Number($("income-goal").value),hours=Number($("income-hours").value);
+ if(!Number.isFinite(goal)||goal<0||goal>1000000||!Number.isFinite(hours)||hours<.5||hours>40){toast("Confira a meta e o tempo semanal.");return;}
+ state.incomeSettings={goal:Math.round(goal*100)/100,weeklyMinutes:Math.round(hours*60)};
+ persist();renderIncome();toast("Meta e tempo atualizados.");
+});
+$("income-form").addEventListener("submit",e=>{
+ e.preventDefault();
+ const client=$("income-client").value.trim(),title=$("income-title").value.trim();
+ const value=Number($("income-value").value),minutes=Number($("income-minutes").value);
+ if(!client||!title||!Number.isFinite(value)||value<0||value>1000000||!Number.isFinite(minutes)||minutes<5||minutes>1200){toast("Preencha cliente, serviço, valor e tempo corretamente.");return;}
+ const values={
+   service:INCOME_SERVICES.includes($("income-service").value)?$("income-service").value:"Outro serviço",
+   client,title,value:Math.round(value*100)/100,stage:incomeStage($("income-stage").value),
+   next:$("income-next").value.trim(),date:$("income-date").value,
+   minutes:Math.round(minutes),updatedAt:Date.now()
+ };
+ const existing=state.opportunities.find(o=>o.id===editingIncomeId);
+ if(existing)Object.assign(existing,values);
+ else state.opportunities.unshift({id:newId(),createdAt:Date.now(),...values});
+ incomeResetForm();persist();renderIncome();toast(existing?"Oportunidade atualizada.":"Oportunidade cadastrada.");
+});
+$("income-cancel").addEventListener("click",()=>{incomeResetForm();toast("Edição cancelada.");});
+$("income-filter").addEventListener("change",renderIncome);
+$("income-template").addEventListener("change",renderIncomeMessage);
+$("income-copy").addEventListener("click",async()=>{
+ const el=$("income-message");
+ try{
+   if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(el.value);toast("Mensagem copiada. Personalize antes de enviar.");return;}
+ }catch(e){}
+ el.focus();el.select();toast("Mensagem selecionada. Use Copiar no menu do celular.");
+});
+document.addEventListener("change",e=>{
+ const select=e.target.closest("[data-income-stage]");
+ if(!select)return;
+ const o=state.opportunities.find(x=>x.id===select.dataset.incomeStage);
+ if(!o)return;
+ o.stage=incomeStage(select.value);o.updatedAt=Date.now();
+ persist();renderIncome();toast("Etapa atualizada.");
+});
+document.addEventListener("click",e=>{
+ const button=e.target.closest("[data-income-edit],[data-income-delete]");
+ if(!button)return;
+ const id=button.dataset.incomeEdit||button.dataset.incomeDelete;
+ const o=state.opportunities.find(x=>x.id===id);
+ if(!o)return;
+ if(button.dataset.incomeDelete){
+   if(!confirm("Excluir esta oportunidade? Isso não pode ser desfeito."))return;
+   state.opportunities=state.opportunities.filter(x=>x.id!==id);
+   if(editingIncomeId===id)incomeResetForm();
+   persist();renderIncome();toast("Oportunidade excluída.");
+   return;
+ }
+ editingIncomeId=id;
+ $("income-service").value=INCOME_SERVICES.includes(o.service)?o.service:"Outro serviço";
+ $("income-client").value=o.client||"";
+ $("income-title").value=o.title||"";
+ $("income-value").value=incomeValue(o.value);
+ $("income-stage").value=incomeStage(o.stage);
+ $("income-next").value=o.next||"";
+ $("income-date").value=o.date||"";
+ $("income-minutes").value=Math.max(5,Math.min(1200,Number(o.minutes)||25));
+ $("income-form-title").textContent="Editar oportunidade";
+ $("income-save").textContent="Salvar alterações";
+ $("income-cancel").hidden=false;
+ $("income-form").scrollIntoView({behavior:"smooth",block:"start"});
+ $("income-client").focus({preventScroll:true});
+});
+
 function renderJournal(){
  $("journal-list").innerHTML=state.journal.length?state.journal.map(j=>'<div class="card item"><div class="body"><small>'+stamp(j.date)+'</small><p class="journal-text">'+escape(j.text)+'</p></div><button class="delete" data-del-journal="'+escape(j.id)+'" aria-label="Excluir reflexão">×</button></div>').join(""):'<div class="empty">Seu diário começa com uma reflexão.</div>';
 }
@@ -110,7 +258,7 @@ for(const button of document.querySelectorAll("[data-prompt]"))button.addEventLi
 $("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("chat-form").requestSubmit();}});
 $("export-btn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:"application/json"});const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download="prumo-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);toast("Backup exportado.");});
 $("import-btn").addEventListener("click",()=>$("import-file").click());
-$("import-file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const raw=JSON.parse(await file.text());const d=raw.data||raw;if(!Array.isArray(d.tasks)||!Array.isArray(d.projects)||!Array.isArray(d.journal)||!Array.isArray(d.chat))throw Error();if(!confirm("Substituir seus dados locais pelo backup?"))return;state={energy:Number(d.energy)||0,tasks:d.tasks,projects:d.projects,journal:d.journal,chat:d.chat};persist();renderAll();toast("Dados restaurados.");}catch(e){toast("Backup inválido.");}finally{e.target.value="";}});
+$("import-file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const raw=JSON.parse(await file.text());const d=raw.data||raw;if(!Array.isArray(d.tasks)||!Array.isArray(d.projects)||!Array.isArray(d.journal)||!Array.isArray(d.chat))throw Error();if(!confirm("Substituir seus dados locais pelo backup?"))return;state={energy:Number(d.energy)||0,tasks:d.tasks,projects:d.projects,journal:d.journal,chat:d.chat,opportunities:Array.isArray(d.opportunities)?d.opportunities:[],incomeSettings:d.incomeSettings&&typeof d.incomeSettings==="object"?d.incomeSettings:{goal:1000,weeklyMinutes:120}};incomeResetForm();persist();renderAll();toast("Dados restaurados.");}catch(e){toast("Backup inválido.");}finally{e.target.value="";}});
 $("clear-chat").addEventListener("click",()=>{if(!confirm("Apagar o histórico de conversa deste navegador?"))return;state.chat=[{role:"assistant",content:greet}];persist();renderChat();toast("Conversa apagada.");});
 $("clear-data").addEventListener("click",()=>{if(!confirm("Apagar permanentemente todos os dados locais do PRUMO neste navegador?"))return;state=defaults();persist();renderAll();toast("Dados locais apagados.");});
 function setAuthText(text){$("login-message").textContent=text;}
@@ -226,7 +374,7 @@ $("logout-btn").addEventListener("click",async()=>{
  setAuthText("Você saiu da conta.");
  updateAuthUI();
 });
-function renderAll(){renderHome();renderTasks();renderJournal();renderChat();}
+function renderAll(){renderHome();renderTasks();renderJournal();renderChat();renderIncome();}
 renderAll();initCloud();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 })();
