@@ -99,6 +99,7 @@ function updateAuthUI(){
  if(!ready){$("api-status").textContent="Modo guiado. Para ativar IA, configure o Supabase em config.js e publique uma função norte-mentor segura.";return;}
  $("login-panel").hidden=false;
  $("login-controls").hidden=recoveringPassword;
+ $("login-password-field").hidden=recoveringPassword;
  $("password-reset-panel").hidden=!recoveringPassword;
  $("api-status").textContent=recoveringPassword?"Recuperação de senha: defina sua nova senha.":session?"Conta conectada à NORTE. Faça um teste na aba Mentoria.":"Supabase configurado. Entre com sua conta autorizada para ativar IA.";
  $("ai-mode").textContent=session&&!recoveringPassword?"● Conta conectada — teste a mentoria para verificar a IA generativa.":"● Modo guiado — entre em Ajustes para conectar sua conta.";
