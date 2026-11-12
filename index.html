@@ -6,7 +6,7 @@
 <meta name="description" content="PRUMO — mentoria e planejamento pessoal e profissional.">
 <link rel="manifest" href="./manifest.webmanifest?v=20261112a"><link rel="icon" href="./icon.svg?v=20261112a" type="image/svg+xml">
 <title>PRUMO · Encontre seu caminho, no seu ritmo</title>
-<link rel="stylesheet" href="./styles.css?v=20261112a">
+<link rel="stylesheet" href="./styles.css?v=20261112b">
 </head>
 <body>
 <div class="app">
@@ -100,6 +100,18 @@
   </div>
   <p class="hint">Privacidade: oportunidades e valores ficam salvos neste navegador e nos seus backups, sem sincronização ou criptografia específica. Use apelidos ou iniciais dos clientes e não registre informações confidenciais.</p>
 </section>
+<section id="page-consultoria" class="page" hidden>
+<div class="pagehead"><div class="eyebrow">✦ FRANÇA HOSPITALITY CONSULTING</div><h1>Consultoria</h1><p>Transformando hospitalidade em resultados — plano de negócios 2026–2027.</p></div>
+<div class="income-summary"><div class="card income-stat"><small>Meta inicial</small><strong>R$ 1.000</strong></div><div class="card income-stat"><small>Horas por semana</small><strong>2h</strong></div><div class="card income-stat"><small>Plano executado</small><strong id="consult-progress">0%</strong></div></div>
+<article class="card formcard"><div class="eyebrow">✧ POSICIONAMENTO</div><h2>Pessoas no centro. Estratégia na prática.</h2><p>Consultoria boutique em atendimento, reservas, experiência do cliente e melhoria operacional para hotéis, pousadas e pequenas empresas de serviços.</p><p class="muted">Missão: aprimorar processos e experiências, conectando qualidade operacional a resultados comerciais.</p></article>
+<div class="sectitle"><h2>Serviços e valores de referência</h2></div>
+<div class="card formcard"><div id="consult-offers"></div><p class="hint">Valores propostos, sujeitos a validação. Receita não equivale a lucro.</p></div>
+<div class="sectitle"><h2>Plano de ação · 30 dias</h2></div><div id="consult-checklist" class="stack"></div>
+<div class="sectitle"><h2>Estratégia 2026–2027</h2></div><div class="card formcard"><div id="consult-phases"></div></div>
+<div class="sectitle"><h2>Metodologia A.C.O.L.H.E.R.</h2></div><div class="card formcard"><p><strong>A</strong>tenção · <strong>C</strong>lareza · <strong>O</strong>rganização · <strong>L</strong>inguagem adequada · <strong>H</strong>umanização · <strong>E</strong>ficiência · <strong>R</strong>esolução</p><p class="muted">Diagnosticar, priorizar e acompanhar melhorias aplicáveis.</p></div>
+<article class="card formcard"><h2>Prospecção e faturamento</h2><p>Use o funil já existente em Renda extra para cadastrar contatos, propostas, etapas comerciais e recebimentos da consultoria.</p><button type="button" class="primary" data-go="renda">Abrir funil comercial</button></article>
+<p class="hint">O checklist fica salvo neste navegador. Faça backup em Ajustes. Não inclua informações confidenciais de clientes ou da empregadora.</p>
+</section>
 <section id="page-diario" class="page" hidden>
   <div class="pagehead"><div class="eyebrow">✦ RECONHEÇA SUA JORNADA</div><h1>Diário</h1><p>Registre sentimentos, percepções e pequenas conquistas.</p></div>
   <form id="journal-form" class="card formcard"><label for="journal-text">Como você está se sentindo?</label><textarea id="journal-text" rows="5" maxlength="6000" placeholder="Escreva sem se cobrar por uma resposta perfeita..." required></textarea><div class="formrow"><small>Seus registros ficam neste navegador.</small><button type="submit" class="primary">Salvar reflexão</button></div></form>
@@ -112,7 +124,7 @@
   <p class="hint">Versão web inicial · PRUMO. Use somente dados pessoais de teste até configurar uma solução segura de armazenamento.</p>
 </section>
 </main>
-<nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="renda"><span>◇</span>Renda</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
+<nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="renda"><span>◇</span>Renda</button><button data-tab="consultoria"><span>✦</span>Consultoria</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
 </div><div id="toast" role="status" aria-live="polite"></div>
-<script src="./config.js?v=20261112a"></script><script src="./app.js?v=20261112a" defer></script>
+<script src="./config.js?v=20261112a"></script><script src="./app.js?v=20261112b" defer></script><script src="./consultoria.js?v=20261112b" defer></script>
 </body></html>
