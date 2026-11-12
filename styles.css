@@ -55,3 +55,18 @@ body{background:radial-gradient(ellipse at 50% -160px,#174E59 0%,var(--bg) 46%);
  .income-stat strong{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.income-progress span{transition:none}}
+
+/* Prospectos pesquisados: separados de contatos efetivamente iniciados. */
+.income-research{margin:18px 0 18px}
+.income-research h2{margin:9px 0}
+.income-prospect-group{margin-top:13px;padding:12px 0;border-top:1px solid var(--line)}
+.income-prospect-group h3{font-size:13px;color:var(--sand);margin-bottom:10px}
+.income-prospect{display:flex;align-items:center;justify-content:space-between;gap:13px;padding:13px 0;border-bottom:1px solid #31596280}
+.income-prospect:last-child{border-bottom:0}
+.income-prospect-copy{min-width:0;flex:1}
+.income-prospect-copy strong{font-size:13px;line-height:1.45;display:block;overflow-wrap:anywhere}
+.income-prospect-copy small{font-size:11px;color:var(--muted);display:block;margin-top:4px}
+.income-prospect-copy p{margin:7px 0;font-size:12px;line-height:1.55;color:#D7E0E1}
+.income-prospect-copy a{color:var(--sand);font-size:12px;text-underline-offset:3px}
+.income-prospect button{font-size:11px;padding:9px 10px;flex:0 0 auto}
+@media(max-width:380px){.income-prospect{align-items:flex-start;flex-direction:column}.income-prospect button{align-self:flex-end}}
