@@ -4,13 +4,13 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071F27">
 <meta name="description" content="PRUMO — mentoria e planejamento pessoal e profissional.">
-<link rel="manifest" href="./manifest.webmanifest?v=20261110j"><link rel="icon" href="./icon.svg?v=20261110j" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest?v=20261112a"><link rel="icon" href="./icon.svg?v=20261112a" type="image/svg+xml">
 <title>PRUMO · Encontre seu caminho, no seu ritmo</title>
-<link rel="stylesheet" href="./styles.css?v=20261110j">
+<link rel="stylesheet" href="./styles.css?v=20261112a">
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="logo"><span class="brandmark"><img src="./icon.svg?v=20261110j" alt=""></span><span>PRU<b>MO</b></span></div><span class="status"><i></i> SEU CAMINHO, NO SEU RITMO</span></header>
+<header class="top"><div class="logo"><span class="brandmark"><img src="./icon.svg?v=20261112a" alt=""></span><span>PRU<b>MO</b></span></div><span class="status"><i></i> SEU CAMINHO, NO SEU RITMO</span></header>
 <main>
 <section id="page-hoje" class="page">
   <div class="hero"><div class="eyebrow">✦ SEU ESPAÇO DE CRESCIMENTO</div><h1>Um passo de cada <em>vez.</em></h1><p>Organize o que importa sem transformar seus planos em cobrança.</p><span class="hero-orbit">✦</span></div>
@@ -62,7 +62,15 @@
     <h3 id="income-action-title">Comece com uma oportunidade.</h3>
     <p id="income-action-text">Cadastre um contato de consultoria, escrita ou viagens esportivas e defina uma ação pequena.</p>
   </article>
-  <div class="sectitle"><h2>Suas oportunidades</h2></div>
+  <section class="card formcard income-research" aria-labelledby="income-research-title">
+  <div class="eyebrow">✧ CONTATOS PARA PESQUISAR</div>
+  <h2 id="income-research-title">Seis negócios para sua primeira prospecção</h2>
+  <p class="muted">São empresas reais localizadas em Guarulhos e na Zona Norte de São Paulo. Não demonstraram interesse na sua consultoria; confirme os canais comerciais antes de abordar.</p>
+  <div id="income-prospect-list" class="income-prospect-list"></div>
+  <div class="formrow wrap"><button type="button" class="primary" id="income-import-prospects">Adicionar os 6 ao funil</button></div>
+  <p class="hint" id="income-prospect-status" role="status">Ao adicionar, elas entram como “Mapeado”, com valor R$ 0, sem contar como propostas ou vendas.</p>
+</section>
+<div class="sectitle"><h2>Suas oportunidades</h2></div>
   <form id="income-form" class="card formcard">
     <h2 id="income-form-title">Nova oportunidade</h2>
     <div class="income-two-col">
@@ -72,7 +80,7 @@
     <label for="income-title">O que você vai oferecer?</label><input id="income-title" maxlength="150" placeholder="Ex.: Diagnóstico de atendimento de 1 hora" required>
     <div class="income-two-col">
       <div><label for="income-value">Valor proposto (R$)</label><input id="income-value" type="number" min="0" max="1000000" step="0.01" inputmode="decimal" placeholder="200,00" required></div>
-      <div><label for="income-stage">Etapa</label><select id="income-stage"><option value="Contato">Primeiro contato</option><option value="Proposta">Proposta enviada</option><option value="Fechado">Serviço fechado</option><option value="Entregue">Serviço entregue</option><option value="Recebido">Pagamento recebido</option><option value="Perdido">Não avançou</option></select></div>
+      <div><label for="income-stage">Etapa</label><select id="income-stage"><option value="Mapeado">Mapeado — ainda sem contato</option><option value="Contato">Primeiro contato</option><option value="Proposta">Proposta enviada</option><option value="Fechado">Serviço fechado</option><option value="Entregue">Serviço entregue</option><option value="Recebido">Pagamento recebido</option><option value="Perdido">Não avançou</option></select></div>
     </div>
     <label for="income-next">Próximo passo prático</label><input id="income-next" maxlength="180" placeholder="Ex.: mandar apresentação por WhatsApp">
     <div class="income-two-col">
@@ -81,7 +89,7 @@
     </div>
     <div class="formrow wrap"><button type="submit" class="primary" id="income-save">Salvar oportunidade</button><button type="button" class="secondary" id="income-cancel" hidden>Cancelar edição</button></div>
   </form>
-  <div class="formrow income-filter-row"><label for="income-filter">Filtrar oportunidades</label><select id="income-filter"><option value="Todas">Todas</option><option value="Contato">Primeiro contato</option><option value="Proposta">Propostas enviadas</option><option value="Fechado">Fechadas</option><option value="Entregue">Entregues</option><option value="Recebido">Recebidas</option><option value="Perdido">Não avançaram</option></select></div>
+  <div class="formrow income-filter-row"><label for="income-filter">Filtrar oportunidades</label><select id="income-filter"><option value="Todas">Todas</option><option value="Mapeado">Mapeados</option><option value="Contato">Primeiro contato</option><option value="Proposta">Propostas enviadas</option><option value="Fechado">Fechadas</option><option value="Entregue">Entregues</option><option value="Recebido">Recebidas</option><option value="Perdido">Não avançaram</option></select></div>
   <div id="income-list" class="stack" aria-live="polite"></div>
   <div class="sectitle"><h2>Mensagem pronta para abordar clientes</h2></div>
   <div class="card formcard">
@@ -106,5 +114,5 @@
 </main>
 <nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="renda"><span>◇</span>Renda</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
 </div><div id="toast" role="status" aria-live="polite"></div>
-<script src="./config.js?v=20261110j"></script><script src="./app.js?v=20261110j" defer></script>
+<script src="./config.js?v=20261112a"></script><script src="./app.js?v=20261112a" defer></script>
 </body></html>
