@@ -1,7 +1,7 @@
 (()=>{"use strict";
 const key="prumo-consultoria-v1";
-const offers=[["Diagnóstico individual",100,"Sessão de avaliação (40 min)"],["Mentoria Essencial",250,"Dois encontros e material PDF"],["Workshop de atendimento",500,"Até cinco participantes"],["Diagnóstico empresarial piloto",650,"Análise de processos, relatório e devolutiva"]];
-const tasks=["Padronizar proposta piloto de R$ 650","Preparar apresentação comercial resumida","Organizar 10 contatos potenciais no funil","Enviar abordagens personalizadas","Realizar conversas e enviar propostas","Revisar resultados e ajustar a oferta"];
+const offers=[["Orientação Expressa",79,"45 min · 3 recomendações"],["Raio-X do Atendimento",149,"1 canal · checklist breve"],["Mentoria Atendimento que Converte",189,"2 encontros de 35 min · material padrão"],["Treinamento para Pequenas Equipes",290,"Remoto · até 5 participantes · 60 min"],["Diagnóstico de Reservas e Atendimento",490,"Até 2 fluxos · relatório breve · devolutiva"]];
+const tasks=["Revisar proposta empresarial: R$ 490, até 2 fluxos","Preparar apresentação comercial resumida","Organizar 10 contatos potenciais no funil","Enviar abordagens personalizadas","Realizar conversas e enviar propostas","Revisar resultados e ajustar a oferta"];
 const phases=[["Nov–dez/2026","Estruturação: materiais, prospecção e primeiro cliente"],["Jan–mar/2027","Validação: executar serviços, medir horas e buscar R$ 1.000 por ciclo"],["Abr–jun/2027","Consolidação: estudos de caso autorizados, e-book e revisão de preços"],["Jul–out/2027","Expansão: avaliar pacotes e capacidade operacional"]];
 let done=[];try{const v=JSON.parse(localStorage.getItem(key)||"[]");if(Array.isArray(v))done=v.filter(x=>Number.isInteger(x)&&x>=0&&x<tasks.length)}catch{}
 const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n);
