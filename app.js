@@ -45,8 +45,58 @@ $("task-form").addEventListener("submit",e=>{e.preventDefault();const input=$("t
 $("project-form").addEventListener("submit",e=>{e.preventDefault();const input=$("project-name");const v=input.value.trim();if(!v)return;state.projects.unshift({id:newId(),title:v,next:$("project-next").value.trim()});input.value="";$("project-next").value="";persist();renderAll();toast("Projeto criado.");});
 
 /* Renda Extra — registros locais, sem IA paga e sem transmissão de dados de clientes. */
-const INCOME_STAGES=[["Contato","Primeiro contato"],["Proposta","Proposta enviada"],["Fechado","Serviço fechado"],["Entregue","Serviço entregue"],["Recebido","Pagamento recebido"],["Perdido","Não avançou"]];
+const INCOME_STAGES=[["Mapeado","Mapeado — ainda sem contato"],["Contato","Primeiro contato"],["Proposta","Proposta enviada"],["Fechado","Serviço fechado"],["Entregue","Serviço entregue"],["Recebido","Pagamento recebido"],["Perdido","Não avançou"]];
 const INCOME_SERVICES=["Consultoria em atendimento","Escrita freelancer","Viagens esportivas","Outro serviço"];
+
+const INCOME_PROSPECTS=[
+ {key:"edy-oliveira",name:"Edy Oliveira Salon Studio",sector:"Beleza e estética",location:"Vila Progresso · Guarulhos",phone:"(11) 98816-9944",website:"https://studioedyoliveira.com.br/",focus:"Recepção, agendamentos e pós-atendimento",next:"Verificar canal profissional e apresentar diagnóstico de experiência do cliente"},
+ {key:"espaco-nilda",name:"Espaço Nilda Ribeiro",sector:"Beleza e estética",location:"Santana · São Paulo",phone:"(11) 2950-4707",website:"",focus:"Experiência no agendamento e acolhimento",next:"Identificar responsável e sondar interesse em diagnóstico de atendimento"},
+ {key:"morelle-concept",name:"Morelle Concept",sector:"Lojas e comércio",location:"Centro · Guarulhos",phone:"(11) 91303-8344",website:"",focus:"Atendimento consultivo e acompanhamento pós-venda",next:"Identificar canal de contato comercial e apresentar proposta para atendimento no varejo"},
+ {key:"tres-chic",name:"Très Chic Accessoires",sector:"Lojas e comércio",location:"Santana · São Paulo",phone:"(11) 4305-8600",website:"https://www.treschicc.com.br/contato",focus:"Experiência integrada na loja e canais digitais",next:"Pesquisar contato comercial e enviar abordagem sobre atendimento omnicanal"},
+ {key:"guaru-inn",name:"Guaru Inn Hostel",sector:"Hospedagens",location:"Vila Barros · Guarulhos",phone:"(11) 93724-8960",website:"https://guaruinn.com.br/",focus:"Mensagens de pré-chegada e reservas diretas",next:"Identificar responsável e apresentar diagnóstico de comunicação da jornada do hóspede"},
+ {key:"casa-dos-gattos",name:"Pousada Casa dos Gattos",sector:"Hospedagens",location:"Jardim Barbosa · Guarulhos",phone:"(11) 95651-5586",website:"",focus:"Informações pré-estadia e acolhimento de hóspedes",next:"Pesquisar contato de gestão e apresentar diagnóstico de experiência da hospedagem"}
+];
+function incomeImportSelected(keys){
+ let added=0;
+ const existing=new Set(state.opportunities.map(o=>String(o.prospectKey||"").trim()).filter(Boolean));
+ const existingNames=new Set(state.opportunities.map(o=>String(o.client||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase()));
+ for(const p of INCOME_PROSPECTS){
+   if(!keys.includes(p.key)||existing.has(p.key)||existingNames.has(p.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()))continue;
+   state.opportunities.push({id:newId(),prospectKey:p.key,createdAt:Date.now(),service:"Consultoria em atendimento",
+     client:p.name,title:"Diagnóstico Express de Atendimento",value:0,stage:"Mapeado",
+     next:p.next,date:"",minutes:10,sourceUrl:p.website,updatedAt:Date.now()});
+   added++;
+ }
+ if(added){persist();renderIncome();}
+ $("income-prospect-status").textContent=added?added+" oportunidade(s) adicionada(s) como Mapeado, sem valores em negociação.": "Os negócios selecionados já estão cadastrados. Nenhum duplicado foi criado.";
+ toast(added?added+" contato(s) mapeado(s).":"Contatos já mapeados.");
+}
+function renderIncomeProspects(){
+ const present=new Set(state.opportunities.map(o=>String(o.prospectKey||"")));
+ const existingNames=new Set(state.opportunities.map(o=>String(o.client||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase()));
+ const exists=p=>present.has(p.key)||existingNames.has(p.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase());
+ const groups=["Beleza e estética","Lojas e comércio","Hospedagens"];
+ $("income-prospect-list").innerHTML=groups.map(g=>{
+  const items=INCOME_PROSPECTS.filter(p=>p.sector===g);
+  return '<div class="income-prospect-group"><h3>'+escape(g)+'</h3>'+
+    items.map(p=>{
+      const isAdded=exists(p);
+      return '<div class="income-prospect"><div class="income-prospect-copy"><strong>'+escape(p.name)+'</strong>'+
+        '<small>'+escape(p.location)+' · '+escape(p.phone)+'</small><p>'+escape(p.focus)+'</p>'+
+        (p.website?'<a href="'+escape(p.website)+'" rel="noopener noreferrer" target="_blank">Canal público</a>':'')+
+        '</div><button type="button" class="secondary" data-income-prospect="'+escape(p.key)+'" '+(isAdded?'disabled':'')+'>'+ (isAdded?"No funil":"Adicionar")+'</button></div>';
+    }).join("")+
+  '</div>';
+ }).join("");
+ $("income-import-prospects").disabled=INCOME_PROSPECTS.every(exists);
+}
+$("income-import-prospects").addEventListener("click",()=>incomeImportSelected(INCOME_PROSPECTS.map(p=>p.key)));
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-income-prospect]");
+ if(!b)return;
+ incomeImportSelected([b.dataset.incomeProspect]);
+});
+
 const INCOME_TEMPLATES={
  consultoria:"Olá! Tudo bem? Trabalho com atendimento ao cliente e hotelaria e estou oferecendo um diagnóstico prático de atendimento para pequenos negócios. A ideia é identificar oportunidades de melhoria na experiência do cliente e sugerir ações simples para a equipe. Você teria interesse em conhecer a proposta? Posso enviar um resumo sem compromisso.",
  escrita:"Olá! Tudo bem? Trabalho com produção e revisão de textos profissionais, como apresentações, descrições de serviços e conteúdos institucionais. Posso ajudar seu negócio a comunicar suas ideias com clareza. Se fizer sentido, posso enviar uma proposta com escopo e prazo.",
@@ -90,6 +140,8 @@ function renderIncome(){
  const hrs=(minutes/60).toLocaleString("pt-BR",{maximumFractionDigits:1});
  $("income-time-info").textContent="Disponível: "+hrs+" h/semana · "+planned+" min estimados nas ações abertas (não são horas trabalhadas).";
  const priority=active.slice().sort((a,b)=>{
+   if(a.stage==="Mapeado" && b.stage!=="Mapeado")return 1;
+   if(b.stage==="Mapeado" && a.stage!=="Mapeado")return -1;
    const da=/^\d{4}-\d{2}-\d{2}$/.test(a.date||"")?a.date:"9999-12-31";
    const db=/^\d{4}-\d{2}-\d{2}$/.test(b.date||"")?b.date:"9999-12-31";
    return da.localeCompare(db);
@@ -119,6 +171,7 @@ function renderIncome(){
       '</article>';
  }).join(""):'<div class="empty">Nenhuma oportunidade neste filtro. Cadastre seu primeiro contato acima para começar.</div>';
  renderIncomeMessage();
+ renderIncomeProspects();
 }
 $("income-settings-form").addEventListener("submit",e=>{
  e.preventDefault();
