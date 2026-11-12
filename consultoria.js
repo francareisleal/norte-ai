@@ -9,5 +9,6 @@ document.getElementById("consult-offers").innerHTML=offers.map(o=>'<div class="c
 document.getElementById("consult-phases").innerHTML=phases.map(p=>'<div class="consult-line"><span><strong>'+p[0]+'</strong><small>'+p[1]+'</small></span></div>').join("");
 function render(){document.getElementById("consult-progress").textContent=Math.round(done.length/tasks.length*100)+"%";document.getElementById("consult-checklist").innerHTML=tasks.map((t,i)=>'<label class="card consult-task"><input type="checkbox" data-consult-task="'+i+'" '+(done.includes(i)?"checked":"")+'><span>'+t+'</span></label>').join("");}
 document.getElementById("consult-checklist").addEventListener("change",e=>{const i=Number(e.target.dataset.consultTask);if(!Number.isInteger(i)||i<0||i>=tasks.length)return;done=e.target.checked?[...new Set([...done,i])]:done.filter(n=>n!==i);try{localStorage.setItem(key,JSON.stringify(done))}catch{}render()});
+window.addEventListener("prumo:calendar-restored",()=>{done=[];try{const v=JSON.parse(localStorage.getItem(key)||"[]");if(Array.isArray(v))done=v.filter(x=>Number.isInteger(x)&&x>=0&&x<tasks.length)}catch(e){}render();});
 render();
 })();
