@@ -1,5 +1,5 @@
 // PRUMO — cache versionado. Atualizações não apagam localStorage.
-const CACHE = "norte-static-v14";
+const CACHE = "norte-static-v15";
 const STATIC = [
   "./",
   "./index.html",
@@ -7,7 +7,7 @@ const STATIC = [
   "./franca-hospitality-apresentacao.html",
   "./styles.css?v=20261112b",
   "./app.js?v=20261112b",
-  "./consultoria.js?v=20261112b",
+  "./consultoria.js?v=20261112c",
   "./config.js?v=20261112b",
   "./manifest.webmanifest?v=20261112b",
   "./icon.svg?v=20261112b"
