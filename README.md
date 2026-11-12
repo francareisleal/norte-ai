@@ -31,3 +31,11 @@ Os dados pessoais do protótipo são armazenados no `localStorage` do navegador 
 
 ## Limitações
 A mentoria local é guiada por regras e não substitui aconselhamento profissional. A integração online requer configuração separada, com possíveis custos de API.
+
+## Site comercial — França Hospitality Consulting
+
+- Página pública: https://francareisleal.github.io/norte-ai/franca-hospitality.html
+- Folheto para impressão e PDF: https://francareisleal.github.io/norte-ai/franca-hospitality-apresentacao.html
+- Contato: francareisleal@gmail.com
+
+A página comercial não exibe dados pessoais do PRUMO. O PRUMO continua disponível na raiz do projeto.
