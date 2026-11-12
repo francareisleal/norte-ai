@@ -6,7 +6,7 @@
 <meta name="description" content="PRUMO — mentoria e planejamento pessoal e profissional.">
 <link rel="manifest" href="./manifest.webmanifest?v=20261112a"><link rel="icon" href="./icon.svg?v=20261112a" type="image/svg+xml">
 <title>PRUMO · Encontre seu caminho, no seu ritmo</title>
-<link rel="stylesheet" href="./styles.css?v=20261112b">
+<link rel="stylesheet" href="./styles.css?v=20261112d">
 </head>
 <body>
 <div class="app">
@@ -106,7 +106,26 @@
 <article class="card formcard"><div class="eyebrow">✧ POSICIONAMENTO</div><h2>Pessoas no centro. Estratégia na prática.</h2><p>Consultoria boutique em atendimento, reservas, experiência do cliente e melhoria operacional para hotéis, pousadas e pequenas empresas de serviços.</p><p class="muted">Missão: aprimorar processos e experiências, conectando qualidade operacional a resultados comerciais.</p></article>
 <div class="sectitle"><h2>Serviços e valores de referência</h2></div>
 <div class="card formcard"><div id="consult-offers"></div><p class="hint">Valores propostos, sujeitos a validação. Receita não equivale a lucro.</p></div>
-<div class="sectitle"><h2>Plano de ação · 30 dias</h2></div><div id="consult-checklist" class="stack"></div>
+<div class="sectitle"><h2 id="consult-calendar-heading">Calendário de implantação · 8 semanas</h2></div>
+<section aria-labelledby="consult-calendar-heading">
+<article class="card formcard consult-calendar-header">
+  <p class="muted">Um plano leve para iniciar sua consultoria: até <strong>2 horas por semana</strong>, com tarefas curtas, metas possíveis e liberdade para ajustar o ritmo.</p>
+  <div class="consult-calendar-controls">
+    <div><label for="consult-start">Início do ciclo</label><input id="consult-start" type="date" value="2026-11-16"></div>
+    <button id="consult-export-ics" type="button" class="secondary">Exportar para calendário (.ics)</button>
+  </div>
+  <p id="consult-range" class="income-subtle" aria-live="polite"></p>
+  <div class="consult-calendar-overview">
+    <strong id="consult-cal-progress">0 de 16 atividades</strong>
+    <small>Você pode mudar as datas sem perder os itens concluídos.</small>
+  </div>
+  <div class="income-progress" id="consult-cal-meter" role="progressbar" aria-label="Progresso do calendário da consultoria" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="consult-cal-bar"></span></div>
+  <p id="consult-next-step" class="consult-next-step">Seu próximo passo aparecerá aqui.</p>
+  <p id="consult-calendar-msg" class="hint" role="status" aria-live="polite">Os registros ficam neste navegador e podem entrar no backup do PRUMO. Exportar .ics não cria lembretes automáticos nem sincroniza suas tarefas.</p>
+</article>
+<div id="consult-weeks" class="consult-calendar-weeks" aria-label="Semanas do cronograma"></div>
+</section>
+<div class="sectitle"><h2>Checklist estratégico · 30 dias</h2></div><div id="consult-checklist" class="stack"></div>
 <div class="sectitle"><h2>Estratégia 2026–2027</h2></div><div class="card formcard"><div id="consult-phases"></div></div>
 <div class="sectitle"><h2>Metodologia A.C.O.L.H.E.R.</h2></div><div class="card formcard"><p><strong>A</strong>tenção · <strong>C</strong>lareza · <strong>O</strong>rganização · <strong>L</strong>inguagem adequada · <strong>H</strong>umanização · <strong>E</strong>ficiência · <strong>R</strong>esolução</p><p class="muted">Diagnosticar, priorizar e acompanhar melhorias aplicáveis.</p></div>
 <article class="card formcard"><div class="eyebrow">✧ APRESENTAÇÃO PARA CLIENTES</div><h2>Material comercial para divulgação</h2><p>Uma página pública da França Hospitality Consulting com os serviços, valores iniciais, método e contato profissional. Compartilhe o link com clientes potenciais.</p><div class="formrow wrap"><a class="primary" href="./franca-hospitality.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none;padding:12px 18px;border-radius:9px">Abrir apresentação comercial ↗</a><a class="secondary" href="./franca-hospitality-apresentacao.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none;padding:12px 18px;border-radius:9px">Folheto comercial / PDF ↗</a></div><p class="hint">A página pública não contém suas tarefas ou dados do PRUMO. O folheto comercial pode ser impresso ou salvo como PDF pelo navegador.</p></article>
@@ -127,5 +146,5 @@
 </main>
 <nav class="bottom" aria-label="Navegação principal"><button data-tab="hoje" class="active"><span>⌂</span>Hoje</button><button data-tab="mentoria"><span>✳</span>Mentoria</button><button data-tab="planos"><span>☷</span>Planos</button><button data-tab="renda"><span>◇</span>Renda</button><button data-tab="consultoria"><span>✦</span>Consultoria</button><button data-tab="diario"><span>♡</span>Diário</button><button data-tab="ajustes"><span>⚙</span>Ajustes</button></nav>
 </div><div id="toast" role="status" aria-live="polite"></div>
-<script src="./config.js?v=20261112a"></script><script src="./app.js?v=20261112b" defer></script><script src="./consultoria.js?v=20261112c" defer></script>
+<script src="./config.js?v=20261112a"></script><script src="./app.js?v=20261112d" defer></script><script src="./consultoria.js?v=20261112c" defer></script><script src="./consultoria-calendario.js?v=20261112d" defer></script>
 </body></html>
