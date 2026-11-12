@@ -79,3 +79,37 @@ body{background:radial-gradient(ellipse at 50% -160px,#174E59 0%,var(--bg) 46%);
 .consult-line span{min-width:0}.consult-line strong{display:block;font-size:13px}.consult-line small{display:block;color:var(--muted);font-size:11px;line-height:1.6;margin-top:4px}.consult-line b{color:var(--sand);white-space:nowrap;font-size:13px}
 .consult-task{display:flex;align-items:center;gap:13px;cursor:pointer;font-size:13px;line-height:1.5;padding:14px}.consult-task input{width:18px;height:18px;flex:0 0 auto;accent-color:#C9A76A}.consult-task:has(input:checked) span{text-decoration:line-through;color:var(--muted)}
 @media(max-width:420px){.bottom button{font-size:7px}.bottom button span{width:29px;font-size:18px}}
+
+/* PRUMO — calendário de aplicação da consultoria */
+.consult-calendar-header{margin-bottom:14px}
+.consult-calendar-controls{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.consult-calendar-controls>div{flex:1;min-width:168px}
+.consult-calendar-controls label{display:block;font-size:12px;margin-bottom:7px;color:var(--muted)}
+.consult-calendar-controls input[type=date]{background:#092A33;color:#F5F0E6;border:1px solid #3C6069;border-radius:9px;padding:11px 13px;max-width:220px;width:100%;min-height:44px;color-scheme:dark}
+.consult-calendar-controls button{min-height:44px;padding:10px 14px}
+.consult-calendar-overview{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:18px}
+.consult-calendar-overview strong{color:var(--mint);font-size:15px}
+.consult-calendar-overview small{color:var(--muted);font-size:11px}
+.consult-next-step{font-size:13px;color:#D8E3E0;line-height:1.65;margin:15px 0 0}
+.consult-calendar-weeks{display:grid;gap:12px;margin-top:14px}
+.consult-week{padding:0;overflow:hidden}
+.consult-week-summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;padding:16px 18px}
+.consult-week-summary::-webkit-details-marker{display:none}
+.consult-week-summary:focus-visible{outline:2px solid var(--mint);outline-offset:-3px}
+.consult-week-summary::after{content:"⌄";color:var(--mint);font-weight:800;font-size:17px}
+.consult-week[open] .consult-week-summary::after{content:"⌃"}
+.consult-week-number{flex:0 0 auto;color:var(--mint);font-size:10px;letter-spacing:.06em;text-transform:uppercase;min-width:55px;font-weight:750}
+.consult-week-info{flex:1;min-width:0;display:grid;gap:4px}
+.consult-week-info strong{font-size:13px;color:#F5F0E6}
+.consult-week-info small{color:var(--muted);font-size:11px}
+.consult-week-status{font-size:10px;color:var(--mint);border:1px solid #466871;border-radius:99px;padding:5px 8px;white-space:nowrap}
+.consult-week-body{padding:2px 18px 18px;border-top:1px solid #335861}
+.consult-week-goal{color:var(--muted);font-size:12px;margin:13px 0}
+.consult-cal-task{display:flex;align-items:center;gap:11px;padding:13px 0;cursor:pointer;border-bottom:1px solid #31596280}
+.consult-cal-task input[type=checkbox]{width:19px;height:19px;accent-color:#C9A76A;flex:0 0 auto}
+.consult-cal-task span{flex:1;font-size:12px;line-height:1.6}
+.consult-cal-task input:checked+span{text-decoration:line-through;color:var(--muted)}
+.consult-cal-task small{color:var(--muted);white-space:nowrap;font-size:10px}
+.consult-week-note-label{display:block;color:var(--muted);font-size:11px;margin:17px 0 6px}
+.consult-week-note{width:100%;min-height:74px;resize:vertical;max-width:100%;background:#092A33;border:1px solid #315962;border-radius:9px;color:#F5F0E6;padding:11px}
+@media(max-width:490px){.consult-week-summary{gap:8px;padding:14px 11px}.consult-week-body{padding:3px 11px 14px}.consult-week-number{min-width:48px;font-size:9px}.consult-week-status{font-size:9px;padding:4px 5px}.consult-week-info strong{font-size:12px}.consult-calendar-controls button{width:100%}}
