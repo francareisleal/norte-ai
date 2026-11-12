@@ -39,3 +39,8 @@ A mentoria local é guiada por regras e não substitui aconselhamento profission
 - Contato: francareisleal@gmail.com
 
 A página comercial não exibe dados pessoais do PRUMO. O PRUMO continua disponível na raiz do projeto.
+
+
+## Cronograma da consultoria no PRUMO
+
+A aba Consultoria inclui um calendário de oito semanas, iniciado por padrão em 16/11/2026, com duas atividades por semana e limite recomendado de duas horas. É possível alterar o início, marcar tarefas, adicionar anotações e exportar eventos em formato .ics (sem sincronização automática). O progresso é guardado no navegador; use os backups em Ajustes.
