@@ -1,58 +1,73 @@
-# Conectar a NORTE AI ao Supabase e à OpenAI
+# Configurar a integração do PRUMO com Supabase e OpenAI
 
-O site está em https://francareisleal.github.io/norte-ai/. A interface já suporta login no Supabase e invoca uma função denominada norte-mentor. **Ainda não há IA online até a conclusão dos passos abaixo.**
+Este guia configura o login e a integração opcional com IA do PRUMO. O repositório ainda se chama `norte-ai`, por isso os endereços do site e do GitHub abaixo mantêm esse caminho.
+
+O código preserva identificadores técnicos antigos — `NORTE_CONFIG`, `norte-mentor` e `NORTE_ALLOWED_USER_ID` — para não quebrar a configuração atual. Esses identificadores não alteram a marca exibida, que é PRUMO.
+
+- Site: https://francareisleal.github.io/norte-ai/
+- Código da função: https://github.com/francareisleal/norte-ai/blob/main/supabase/functions/norte-mentor/index.ts
+
+A integração com IA só ficará ativa depois de concluir os passos abaixo.
 
 ## 1. Criar o acesso privado
-Abra o projeto no Supabase Dashboard > Authentication > Users e crie/convide o seu usuário de acesso (e-mail e senha). Não compartilhe senhas no GitHub ou no ChatGPT.
 
-Copie o User ID (UUID) dessa conta. **Não use seu nome, seu e-mail ou o nome do projeto para o segredo de autorização.**
+No painel do Supabase, abra **Authentication → Users** e crie ou convide a conta que terá acesso. Não compartilhe senhas no GitHub ou no ChatGPT.
 
-## 2. Criar os Secrets
-No painel Supabase, abra Edge Functions > Secrets.
-- OPENAI_API_KEY = chave de API criada em https://platform.openai.com/api-keys
-- NORTE_ALLOWED_USER_ID = UUID do seu usuário de Authentication > Users.
+Copie o User ID (UUID) dessa conta. Use o UUID no segredo de autorização; não use nome ou e-mail.
 
-Esses valores ficam **somente no Supabase**, nunca no arquivo config.js nem no repositório GitHub.
+## 2. Configurar os secrets
 
-Confirme cobrança da API OpenAI e configure limites/alertas no projeto antes de começar os testes.
+No Supabase, abra **Edge Functions → Secrets** e configure:
+
+- `OPENAI_API_KEY`: chave da API criada em https://platform.openai.com/api-keys
+- `NORTE_ALLOWED_USER_ID`: UUID da conta em **Authentication → Users**
+
+Esses valores devem ficar somente no Supabase. Nunca os coloque em `config.js` ou no repositório. Confirme a cobrança da API e configure limites e alertas antes de começar os testes.
 
 ## 3. Implantar a Edge Function
-Abra Edge Functions > Deploy a new function > Via Editor.
-Nome: norte-mentor
 
-Copie o código-fonte do repositório:
-https://github.com/francareisleal/norte-ai/blob/main/supabase/functions/norte-mentor/index.ts
+No Supabase, abra **Edge Functions → Deploy a new function → Via Editor**.
 
-Cole no editor e faça Deploy. Mantenha a validação de JWT habilitada (verify_jwt = true).
+- Nome da função: `norte-mentor`
+- Código-fonte: copie o arquivo indicado no início deste guia.
+- Mantenha a validação JWT habilitada (`verify_jwt = true`).
 
-A função exige usuário autenticado, confere o ID autorizado e recusa pedidos sem credenciais. Ela limita o histórico enviado ao modelo, mas **não possui ainda limitação persistente de quantidade de requisições**. É um protótipo de uso individual.
+A função exige uma sessão autenticada, confere o UUID autorizado e recusa pedidos sem credenciais. Ela limita o histórico enviado ao modelo, mas ainda não tem limite persistente de quantidade de requisições; é um protótipo para uso individual.
 
-## 4. Encontrar os dados públicos
-No Supabase Dashboard, use o botão Connect ou Settings > API Keys:
-- Project URL: exemplo https://exemplo.supabase.co
-- Publishable key: começa com sb_publishable_.
+## 4. Copiar os dados públicos do projeto
 
-Os dois são valores de configuração para o navegador. Não copie as chaves "secret", "service_role" ou senhas.
+No Supabase, use **Connect** ou **Settings → API Keys** para localizar:
 
-## 5. Configurar a NORTE no GitHub
-Edite o arquivo config.js na branch main:
+- **Project URL**, no formato `https://exemplo.supabase.co`
+- **Publishable key**, iniciada por `sb_publishable_`
+
+Não copie chaves `secret`, `service_role` ou senhas.
+
+## 5. Configurar o PRUMO
+
+Na branch `main`, edite `config.js` e preencha os valores públicos:
+
+```js
 window.NORTE_CONFIG = {
   supabaseUrl: "https://SEU-PROJETO.supabase.co",
   supabasePublishableKey: "sb_publishable_..."
 };
+```
 
-Salve/Commit changes. Depois, abra o site, abra Ajustes, entre com usuário e senha e teste na aba Mentoria.
+Salve as alterações. Depois, abra o PRUMO, vá a **Ajustes**, entre com a conta autorizada e teste a aba **Mentoria**.
 
 ## 6. Erros comuns
-- "Modo guiado": faltou preencher config.js ou ainda não fez login.
-- "Conta não autorizada": o UUID salvo em NORTE_ALLOWED_USER_ID não corresponde ao usuário conectado.
-- "Chave OpenAI ainda não configurada": faltou OPENAI_API_KEY no Supabase.
-- 401: verifique login, token e verify_jwt.
-- 404: a função norte-mentor não está implantada com o nome correto.
-- Erro de CORS: verifique se o código da função foi copiado por completo.
-- 429: limite de requisições da API de IA, verifique uso/faturamento.
 
-## Limites e dados pessoais
-Os diálogos, tarefas e diário ficam armazenados no navegador e podem ser perdidos ao limpar dados do dispositivo. Mensagens e contexto de tarefas/projetos são enviados à OpenAI apenas quando conectado e o usuário envia mensagens na aba Mentoria. A função define store:false na chamada Responses API. Não use informações sigilosas de hóspedes ou terceiros. Evite escrever dados extremamente sensíveis no protótipo.
+- **Modo guiado:** falta preencher `config.js` ou entrar na conta.
+- **Conta não autorizada:** o UUID de `NORTE_ALLOWED_USER_ID` não corresponde à conta conectada.
+- **Chave OpenAI ainda não configurada:** falta adicionar `OPENAI_API_KEY` no Supabase.
+- **401:** confira login, token e `verify_jwt`.
+- **404:** confirme que a Edge Function foi implantada com o nome `norte-mentor`.
+- **CORS:** confira se o código da função foi copiado por completo.
+- **429:** confira os limites e a cobrança da API.
 
-A instalação e o uso em produção devem ser testados antes de confiar na aplicação.
+## Dados pessoais e limites
+
+Tarefas, diário e conversas ficam no navegador e podem ser perdidos quando os dados locais forem apagados. Quando a integração estiver ativa, o conteúdo da conversa e o contexto enviado à aba Mentoria são encaminhados à OpenAI. A função define `store: false` na chamada à Responses API.
+
+Não registre informações sigilosas de hóspedes ou de terceiros. Teste a instalação e o uso antes de confiar no aplicativo.
